@@ -13,8 +13,8 @@ module mips_core(
     output  [XLEN - 1:0] inst_addr;
     input   [XLEN - 1:0] inst;
     output  [XLEN - 1:0] mem_addr;
-    input   wire [7:0]  mem_data_out[0:3];
-    output  wire [7:0]  mem_data_in[0:3];
+    output   wire [7:0]  mem_data_out[0:3];
+    input  wire [7:0]  mem_data_in[0:3];
     output         mem_write_en;
     output reg     halted;
     input          clk;
