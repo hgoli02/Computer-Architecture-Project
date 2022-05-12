@@ -1,4 +1,4 @@
-
+`include "../323src/regfile.sv"
 module mips_core(
     inst_addr,
     inst,
@@ -10,6 +10,7 @@ module mips_core(
     clk,
     rst_b
 );
+    parameter XLEN = 32;
     output  [31:0] inst_addr;
     input   [31:0] inst;
     output  [31:0] mem_addr;
@@ -19,15 +20,18 @@ module mips_core(
     output reg     halted;
     input          clk;
     input          rst_b;
+    
+    // reg [XLEN - 1:0] mar;
+    // reg [XLEN - 1:0] mbr;
 
     regfile RegisterFile(
-        .rs_data,
-        .rt_data,
-        .rs_num,
-        .rt_num,
-        .rd_num,
-        .rd_data,
-        .rd_we,
+        .rs_data(),
+        .rt_data(),
+        .rs_num(),
+        .rt_num(),
+        .rd_num(),
+        .rd_data(),
+        .rd_we(),
         .clk(clk),
         .rst_b(rst_b),
         .halted(halted)
