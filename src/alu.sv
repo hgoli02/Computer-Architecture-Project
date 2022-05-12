@@ -1,4 +1,4 @@
-module ALU (
+module alu (
     
 );
     
