@@ -1,2 +1,6 @@
 /obj_dir
-/.vscode
+.vscode/configurationCache.log
+.gitignore
+.vscode/settings.json
+.vscode/targets.log
+.vscode/dryrun.log
