@@ -13,15 +13,18 @@ module mips_core(
     output  [XLEN - 1:0] inst_addr;
     input   [XLEN - 1:0] inst;
     output  [XLEN - 1:0] mem_addr;
-    input   [7:0]  mem_data_out[0:3];
-    output  [7:0]  mem_data_in[0:3];
+    input   wire [7:0]  mem_data_out[0:3];
+    output  wire [7:0]  mem_data_in[0:3];
     output         mem_write_en;
     output reg     halted;
     input          clk;
     input          rst_b;
     
     data_path DataPath(
-        inst
+        .inst(inst),
+        .mem_addr(mem_addr),
+        .mem_data_in(mem_data_in),
+        .mem_data_out(mem_data_out)
     );
     
    
