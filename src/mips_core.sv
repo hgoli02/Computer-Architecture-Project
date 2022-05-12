@@ -20,9 +20,12 @@ module mips_core(
     input          clk;
     input          rst_b;
     
+<<<<<<< HEAD
     wire [XLEN - 1:0] rt_data;
     wire [XLEN - 1:0] rs_data;
 
+=======
+>>>>>>> 2449d72c12180bac86291c00fe7e62605ef4e6eb
     regfile RegisterFile(
         .rs_data(rs_data),
         .rt_data(rt_data),
