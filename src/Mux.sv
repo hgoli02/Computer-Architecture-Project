@@ -1,12 +1,11 @@
-module MUX #(
+module Mux #(
     parameter XLEN = 32
 ) (
-    s, in0, in1, out, en
+    select, in0, in1, out
 );
-    input s;
-    input en;
+    input select;
     input [XLEN - 1:0] in0, in1;
     output out;
-    assign out = s == 0 ? in0 : in1;
+    assign out = select == 0 ? in0 : in1;
     
 endmodule

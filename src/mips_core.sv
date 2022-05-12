@@ -20,16 +20,8 @@ module mips_core(
     input          clk;
     input          rst_b;
     
-    regfile RegisterFile(
-        .rs_data(),
-        .rt_data(),
-        .rs_num(),
-        .rt_num(),
-        .rd_num(),
-        .rd_data(),
-        .rd_we(),
-        .clk(clk),
-        .rst_b(rst_b),
-        .halted(halted)
+    data_path DataPath(
+        inst
     );
+    
 endmodule
