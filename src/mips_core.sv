@@ -23,11 +23,15 @@ module mips_core(
     wire memOrReg;
     wire aluSrc;
     wire [3:0] alu_operation;
-    wire write_enable;
+    wire reg_write_enable;
     wire regDest;
+    wire branch;
+    wire jump;
+    wire jump_register;
 
     data_path DataPath(
         .inst(inst),
+        .inst_addr(inst_addr),
         .mem_addr(mem_addr),
         .mem_data_in(mem_data_in),
         .mem_data_out(mem_data_out),
@@ -37,8 +41,11 @@ module mips_core(
         .rst_b(rst_b),
         .halted(halted),
         .alu_operation(alu_operation),
-        .write_enable(write_enable),
-        .regDest(regDest)
+        .reg_write_enable(reg_write_enable),
+        .regDest(regDest),
+        .branch(branch),
+        .jump(jump),
+        .jump_register(jump_register)
     );
     
    
