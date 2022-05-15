@@ -5,7 +5,8 @@ module data_path (
 parameter XLEN = 32;
 input clk, halted, rst_b;
 
-input wire [XLEN - 1:0] inst ,mem_addr;
+input wire [XLEN - 1:0] inst;
+output wire [XLEN - 1:0] mem_addr;
 
 input  wire [7:0]  mem_data_in[0:3];
 input  wire [7:0]  mem_data_out[0:3];
@@ -36,8 +37,8 @@ Mux memOrAluResultMux(.select(memOrReg),.in0(alu_result),.in1(memory_out),.out(d
 
 ALU alu(.input1(data_s), .input2(alu_second_source), .out(alu_result), .zero(isAluZero),.alu_operation(alu_operation));
 
-assign alu_result = mem_addr;
-assign data_t = memory_in;
+assign mem_addr = alu_result;
+assign memory_in = data_t;
 
 
 regfile RegisterFile(
