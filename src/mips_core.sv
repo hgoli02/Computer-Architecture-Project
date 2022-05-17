@@ -13,31 +13,40 @@ module mips_core(
     output  [XLEN - 1:0] inst_addr;
     input   [XLEN - 1:0] inst;
     output  [XLEN - 1:0] mem_addr;
-    input   [7:0]  mem_data_out[0:3];
-    output  [7:0]  mem_data_in[0:3];
+    output   wire [7:0]  mem_data_out[0:3];
+    input  wire [7:0]  mem_data_in[0:3];
     output         mem_write_en;
     output reg     halted;
     input          clk;
     input          rst_b;
-    
-    wire [XLEN - 1:0] rt_data;
-    wire [XLEN - 1:0] rs_data;
 
-    regfile RegisterFile(
-        .rs_data(rs_data),
-        .rt_data(rt_data),
-        .rs_num(),
-        .rt_num(),
-        .rd_num(),
-        .rd_data(),
-        .rd_we(),
+    wire memOrReg;
+    wire aluSrc;
+    wire [3:0] alu_operation;
+    wire reg_write_enable;
+    wire regDest;
+    wire branch;
+    wire jump;
+    wire jump_register;
+
+    data_path DataPath(
+        .inst(inst),
+        .inst_addr(inst_addr),
+        .mem_addr(mem_addr),
+        .mem_data_in(mem_data_in),
+        .mem_data_out(mem_data_out),
+        .memOrReg(memOrReg),
+        .aluSrc(aluSrc),
         .clk(clk),
         .rst_b(rst_b),
-        .halted(halted)
+        .halted(halted),
+        .alu_operation(alu_operation),
+        .reg_write_enable(reg_write_enable),
+        .regDest(regDest),
+        .branch(branch),
+        .jump(jump),
+        .jump_register(jump_register)
     );
-
-    alu alu(
-        .input1(rs_data),
-        .input2(),
-    )
+    
+   
 endmodule
