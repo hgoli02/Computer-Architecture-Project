@@ -52,7 +52,7 @@ module ALU #(
 
             DIV : out = input1 / input2;
 
-             SLT : 
+            SLT : 
                 begin
                 out = input1 - input2;
                 if(out[31])
