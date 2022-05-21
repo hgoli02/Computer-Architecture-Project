@@ -69,4 +69,3 @@ initial begin
 end
 
 endmodule
-`default_nettype wire
