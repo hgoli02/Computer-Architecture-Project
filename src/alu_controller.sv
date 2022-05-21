@@ -8,7 +8,7 @@ module ALU_CONTROLLER(alu_operation, opcode, func);
                      NOR = 4'd4 ,SLL = 4'd5, SRL = 4'd6, SLT = 4'd7, ADD = 4'd8,
                      ADDU = 4'd9, SUB = 4'd10, SUBU = 4'd11, MULT = 4'd12, DIV = 4'd13 ;
 
-    always @(*) begin
+    always @(opcode, func) begin
         
         case (opcode)
             // R instructions
