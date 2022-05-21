@@ -35,7 +35,7 @@ module ALU #(
 
             AND :  out = input1 & input2;
 
-            NOR :  out = input1 ~| input2;
+            NOR :  out = ~(input1 | input2);
 
             SLL : out = input1 << input2;
 

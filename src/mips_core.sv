@@ -47,6 +47,19 @@ module mips_core(
         .jump(jump),
         .jump_register(jump_register)
     );
+
+    CU control_unit(
+        .halted(halted),
+        .opcode(inst[31:26]),
+        .func(inst[5:0]),
+        .aluSrc(),
+        .regDest(), 
+        .link(),
+        .pcOrMem(),
+        .memOrReg(),
+        .branch()
+
+    );
     
    
 endmodule
