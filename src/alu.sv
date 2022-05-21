@@ -65,7 +65,4 @@ module ALU #(
         endcase
     end
 
-     always @(alu_operation) 
-             $display("input1 %d,input2 %d,alu_operation %h,out %d,negative %h,zero %h", input1,input2,alu_operation,out, negative, zero);
-
 endmodule

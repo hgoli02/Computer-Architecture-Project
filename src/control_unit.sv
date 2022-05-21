@@ -25,7 +25,7 @@ module control_unit (
     ALU_CONTROLLER aluController(alu_operation, opcode, func);
 
 
-    localparam [5:0] RTYPE = 6'b000000, ADDIU = 6'b001001;
+    localparam [5:0] RTYPE = 6'b000000, ADDIU = 6'b001001, ADDI = 6'b001000;
 
     localparam [5:0] SYSCALL = 6'b001100, ADD = 6'b100000;
 
@@ -54,13 +54,18 @@ module control_unit (
                     //TODO!
                 end
                 default: begin
-                    
+
                 end
             endcase
             ADDIU: begin
                 reg_write_enable = 1;
                 alu_src = 1;
             end
+            ADDI: begin
+                reg_write_enable = 1;
+                alu_src = 1;
+            end
+
 
             default: begin
 
