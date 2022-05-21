@@ -61,7 +61,7 @@ module ALU #(
                 else
                 out = 0;
                 end
-            default : out = 32'b0; //TODO : 32 to be replaced with XLEN
+            default : out = {XLEN{1'b0}}; //TODO : 32 to be replaced with XLEN
         endcase
     end
 

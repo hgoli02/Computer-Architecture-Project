@@ -20,14 +20,16 @@ module mips_core(
     input          clk;
     input          rst_b;
 
-    wire memOrReg;
-    wire aluSrc;
+    wire mem_or_reg;
+    wire alu_src;
     wire [3:0] alu_operation;
     wire reg_write_enable;
-    wire regDest;
+    wire reg_dest;
     wire branch;
     wire jump;
     wire jump_register;
+    wire reg_or_mem;
+    wire link;
 
     data_path DataPath(
         .inst(inst),
@@ -35,28 +37,30 @@ module mips_core(
         .mem_addr(mem_addr),
         .mem_data_in(mem_data_in),
         .mem_data_out(mem_data_out),
-        .memOrReg(memOrReg),
-        .aluSrc(aluSrc),
+        .mem_or_reg(mem_or_reg),
+        .alu_src(alu_src),
         .clk(clk),
         .rst_b(rst_b),
         .halted(halted),
         .alu_operation(alu_operation),
         .reg_write_enable(reg_write_enable),
-        .regDest(regDest),
+        .reg_dest(reg_dest),
         .branch(branch),
         .jump(jump),
-        .jump_register(jump_register)
+        .jump_register(jump_register),
+        .reg_or_mem(reg_or_mem),
+        .link(link)
     );
 
     CU control_unit(
         .halted(halted),
         .opcode(inst[31:26]),
         .func(inst[5:0]),
-        .aluSrc(),
-        .regDest(), 
+        .alu_src(),
+        .reg_dest(), 
         .link(),
-        .pcOrMem(),
-        .memOrReg(),
+        .pc_or_mem(),
+        .mem_or_reg(),
         .branch()
 
     );

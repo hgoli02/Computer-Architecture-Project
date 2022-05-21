@@ -1,19 +1,19 @@
 module CU (
-    opcode, func, halted, aluSrc, regDest, link, pcOrMem, memOrReg, branch
+    opcode, func, halted, alu_src, reg_dest, link, pc_or_mem, mem_or_reg, branch
 );
     output reg halted;
-    output reg aluSrc;
+    output reg alu_src;
+    output reg reg_dest;
     output reg link;
-    output reg pcOrMem;
-    output reg memOrReg;
+    output reg pc_or_mem;
+    output reg mem_or_reg;
     output reg branch;
-    output reg regDest;
-
 
     input[5:0] opcode;
     input[5:0] func;
 
     //ALU_CONTROLLER aluController();
+
 
     localparam [5:0] RTYPE = 6'b0;
 
@@ -21,7 +21,7 @@ module CU (
 
     always @(*) begin
         link = 0;
-        pcOrMem = 0;
+        pc_or_mem = 0;
         branch = 0;
         //reset control signals!
         case (opcode)
@@ -31,9 +31,9 @@ module CU (
                     halted = 1;
                 end
                 ADD : begin
-                    aluSrc = 0;
-                    regDest = 1;
-                    memOrReg = 0;
+                    alu_src = 0;
+                    reg_dest = 1;
+                    mem_or_reg = 0;
                 end
                 default: begin
                     $display("No func in R type %b",func);
@@ -43,6 +43,7 @@ module CU (
                 $display("No Opcode %b", opcode);
             end
  
+
         endcase
 
     end
