@@ -12,21 +12,21 @@ module ALU #(
     
     input[XLEN-1:0] input1,input2;
     input[3:0] alu_operation; //TODO check size
-    output reg [XLEN-1:0] out;
+    output reg[XLEN-1:0] out;
     output zero;
     output negative;
     //output overflow;
-
+    // reg signed [XLEN - 1 : 0] signed_temp = 0;
     localparam [3:0] NOP = 4'd0, XOR = 4'd1, OR = 4'd2, AND = 4'd3,
                      NOR = 4'd4 ,SLL = 4'd5, SRL = 4'd6, SLT = 4'd7, ADD = 4'd8,
-                     ADDU = 4'd9, SUB = 4'd10, SUBU = 4'd11, MULT = 4'd12, DIV = 4'd13 ;
+                     ADDU = 4'd9, SUB = 4'd10, SUBU = 4'd11, MULT = 4'd12, DIV = 4'd13,SRA = 4'd14 ;
 
     assign zero = ~|out;
 
     assign negative = out[XLEN - 1];
 
 
-    always @(input1, input2, alu_operation) begin
+    always @(input1, input2, alu_operation) begin/* verilator lint_off LATCH */
         case(alu_operation)
         
             XOR : out = input1 ^ input2;
@@ -61,6 +61,13 @@ module ALU #(
                 else
                 out = 0;
                 end
+
+            SRA : begin
+                // signed_temp <= input1;
+                // out = signed_temp >>> input2; //TODO signed
+                out = input1 >>> input2; 
+            end
+            NOP : out = input1;
             default : out = {XLEN{1'b0}};
         endcase
     end

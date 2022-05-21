@@ -20,7 +20,7 @@ assign memory_out = {mem_data_in[0], mem_data_in[1], mem_data_in[2],mem_data_in[
 
 
 
-input [3:0] alu_operation; //TODO: alu Operation number of bytes to be determined
+input [3:0] alu_operation;
 input reg_dest; // R type and I type Mux from control unit
 input reg_write_enable; // register file write enable from control unit 
 input alu_src; //alu_src
@@ -31,9 +31,9 @@ input branch;
 input jump;
 input jump_register;
 input does_shift_amount_need;
+input is_unsigned;
 output zero;
 output negative;
-input is_unsigned;
 wire [XLEN - 1:0] rs_data, rt_data, rd_data, alu_second_source,alu_pre_input,
                     alu_result;
 
@@ -114,7 +114,7 @@ regfile RegisterFile(
     );
 
 always @(posedge clk) begin
-    $display($time, "  rd %d rs = %d   rt = %d rd data %d ", rd_num, inst[25:21],inst[20:16],rd_data);
+    $display($time, " rd=%d ,rs = %d ,rt = %d ,rd_data=%d, inst = %h", rd_num, rs_data,rt_data,rd_data,inst);
 end
 
 endmodule

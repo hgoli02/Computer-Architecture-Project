@@ -6,7 +6,7 @@ module ALU_CONTROLLER(alu_operation, opcode, func);
 
     localparam [3:0] NOP = 4'd0, XOR = 4'd1, OR = 4'd2, AND = 4'd3,
                      NOR = 4'd4 ,SLL = 4'd5, SRL = 4'd6, SLT = 4'd7, ADD = 4'd8,
-                     ADDU = 4'd9, SUB = 4'd10, SUBU = 4'd11, MULT = 4'd12, DIV = 4'd13 ;
+                     ADDU = 4'd9, SUB = 4'd10, SUBU = 4'd11, MULT = 4'd12, DIV = 4'd13,SRA = 4'd14;
 
     always @(opcode, func) begin
         
@@ -14,8 +14,11 @@ module ALU_CONTROLLER(alu_operation, opcode, func);
             // R instructions
             6'b000000 :begin
                 case (func)
-                    6'b000100 : alu_operation = SLL; //SLL, SLLV
-                    6'b000110 : alu_operation = SRL; //SRL, SRLV
+                    6'b000000 : alu_operation = SLL; //SLLV
+                    6'b000100 : alu_operation = SLL; //SLL
+                    6'b000010 : alu_operation = SRL; //SRL
+                    6'b000110 : alu_operation = SRL; //SRLV
+                    6'b000011 : alu_operation = SRA; //SRA
                     6'b100110 : alu_operation = XOR; //XOR
                     6'b100010 : alu_operation = SUB; // sub
                     6'b101010 : alu_operation = SLT; //SLT
@@ -39,9 +42,9 @@ module ALU_CONTROLLER(alu_operation, opcode, func);
             6'b001001 : alu_operation = ADDU; //ADDiu (unsigned) 
             6'b000100 : alu_operation = SUB; //BEQ 
             6'b000101 : alu_operation = SUB; //BNE
-            6'b000110 : alu_operation = SUB; //BLEZ
-            6'b000111 : alu_operation = SUB; //BGTZ        
-            6'b000001 : alu_operation = SUB; //BGEZ             
+            6'b000110 : alu_operation = NOP; //BLEZ
+            6'b000111 : alu_operation = NOP; //BGTZ        
+            6'b000001 : alu_operation = NOP; //BGEZ             
             default : alu_operation = NOP;
             
         endcase
