@@ -41,6 +41,7 @@ module control_unit (
         mem_or_reg = 0;
         alu_src = 0;
         mem_write_en = 0;
+        reg_dest = 0;
         should_branch = 0;
         //reset control signals!
         case (opcode)

@@ -114,7 +114,7 @@ regfile RegisterFile(
     );
 
 always @(posedge clk) begin
-    $display("%d %d", rd_num, rd_data);
+    $display($time, "  rd %d rs = %d   rt = %d rd data %d ", rd_num, inst[25:21],inst[20:16],rd_data);
 end
 
 endmodule
