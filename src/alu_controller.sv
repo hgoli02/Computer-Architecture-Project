@@ -13,7 +13,7 @@ module ALU_CONTROLLER(alu_operation, opcode, func);
         case (opcode)
             // R instructions
             6'b000000 :begin
-                case (func):
+                case (func)
                     6'b000100 : alu_operation = SLL; //SLL, SLLV
                     6'b000110 : alu_operation = SRL; //SRL, SRLV
                     6'b100110 : alu_operation = XOR; //XOR
