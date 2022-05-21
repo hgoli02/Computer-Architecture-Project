@@ -30,7 +30,7 @@ module mips_core(
     wire jump_register;
     wire reg_or_mem;
     wire link;
-
+    wire does_shift_amount_need;
     data_path DataPath(
         .inst(inst),
         .inst_addr(inst_addr),
@@ -49,10 +49,11 @@ module mips_core(
         .jump(jump),
         .jump_register(jump_register),
         .reg_or_mem(reg_or_mem),
-        .link(link)
+        .link(link),
+        .does_shift_amount_need(does_shift_amount_need)
     );
 
-    CU control_unit(
+    control_unit ControlUnit(
         .halted(halted),
         .opcode(inst[31:26]),
         .func(inst[5:0]),
