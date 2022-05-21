@@ -61,11 +61,11 @@ module ALU #(
                 else
                 out = 0;
                 end
-            default : out = {XLEN{1'b0}}; //TODO : 32 to be replaced with XLEN
+            default : out = {XLEN{1'b0}};
         endcase
     end
 
-     always @(alu_operation) 
-             $display("input1 %d,input2 %d,alu_operation %h,out %d,negative %h,zero %h", input1,input2,alu_operation,out, negative, zero);
+    //  always @(alu_operation) 
+    //     $display("input1 %d,input2 %h,alu_operation %h,out %d,negative %h,zero %h", input1,input2,alu_operation,out, negative, zero);
 
 endmodule
