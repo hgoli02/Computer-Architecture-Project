@@ -28,7 +28,7 @@ module mips_core(
     wire branch;
     wire jump;
     wire jump_register;
-    wire reg_or_mem;
+    wire pc_or_mem;
     wire link;
     wire does_shift_amount_need;
     data_path DataPath(
@@ -48,7 +48,7 @@ module mips_core(
         .branch(branch),
         .jump(jump),
         .jump_register(jump_register),
-        .reg_or_mem(reg_or_mem),
+        .pc_or_mem(pc_or_mem),
         .link(link),
         .does_shift_amount_need(does_shift_amount_need)
     );

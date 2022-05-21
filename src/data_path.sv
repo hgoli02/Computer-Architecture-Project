@@ -1,6 +1,6 @@
 module data_path (
     inst,inst_addr , reg_dest, reg_write_enable, alu_src, alu_operation, mem_addr, mem_data_in,mem_data_out,
-    mem_or_reg,clk,halted,rst_b,branch,jump,jump_register,reg_or_mem,link,does_shift_amount_need
+    mem_or_reg,clk,halted,rst_b,branch,jump,jump_register,pc_or_mem,link,does_shift_amount_need
 );
 parameter XLEN = 32;
 input clk, halted, rst_b;
@@ -23,7 +23,7 @@ input reg_dest; // R type and I type Mux from control unit
 input reg_write_enable; // register file write enable from control unit 
 input alu_src; //alu_src
 input mem_or_reg; // what data to write in reg file from control unit
-input reg_or_mem;
+input pc_or_mem;
 input link;
 input branch;
 input jump;
@@ -45,7 +45,7 @@ Mux #(5) write_reg_if_jal_mux(.select(link),.in0(write_reg_num_inst),.in1(5'd31)
 
 wire [XLEN -1 : 0] mem_or_alu_write_data;
 Mux mem_or_alu_result_mux(.select(mem_or_reg),.in0(alu_result),.in1(memory_out),.out(mem_or_alu_write_data));
-Mux memoralu_or_pc_incremented_mux(.select(reg_or_mem),.in0(mem_or_alu_write_data),.in1(pc_incremented),.out(data_d));
+Mux memoralu_or_pc_incremented_mux(.select(pc_or_mem),.in0(mem_or_alu_write_data),.in1(pc_incremented),.out(data_d));
 
 wire[XLEN - 1 : 0] shift_amount_32bit;
 assign shift_amount_32bit = {{(XLEN - 5){1'b0}},inst[10:6]};
