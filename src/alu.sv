@@ -65,49 +65,7 @@ module ALU #(
         endcase
     end
 
-
-
-
-
-
-
-
-
-
-
-    // assign out = alu_operation == 4'b0001 ? input1 ^ input2 : XLEN'bz; 
-    
-    // assign out = alu_operation == 4'b0010 ? input1 | input2 : XLEN'bz;
-    
-    // assign out = alu_operation == 4'b0011 ? input1 & input2 : XLEN'bz;
-    
-    // assign out = alu_operation == 4'b0100 ? input1 ~| input2 : XLEN'bz;
-    
-    // assign out = alu_operation == 4'b0101 ? input1 << input2 : XLEN'bz;
-    
-    // assign out = alu_operation == 4'b0110 ? input1 >> input2 : XLEN'bz;
-    
-    // assign out = alu_operation == 4'b0111 ? input1 > input2 : XLEN'bz; // he'b
-    
-    // assign out = alu_operation == 4'b1000 ? input1 + input2 : XLEN'bz;
-    
-    // assign out = alu_operation == 4'b1001 ? input1 + input2 : XLEN'bz;
-
-    // assign out = alu_operation == 4'b1010 ? input1 - input2 : XLEN'bz;
-    
-    // assign out = alu_operation == 4'b1011 ? input1 - input2 : XLEN'bz;
-
-    // assign out = alu_operation == 4'b1100 ? input1 * input2 : XLEN'bz;
-
-    // assign out = alu_operation == 4'b1101 ? input1 \ input2 : XLEN'bz;
-
-    // assign out = alu_operation == 4'b0000 ? input1 : XLEN'bz;
-
-    // assign zero = ~|out;
-
-    // assign negative =  ?  : XLEN'bz
-
-
-
+    // always @(alu_operation) 
+    //         $display("input1 %d,input2 %d,alu_operation %h,out %d,negative %h,zero %h", input1,input2,alu_operation,out, negative, zero);
 
 endmodule

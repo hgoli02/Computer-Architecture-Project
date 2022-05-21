@@ -52,9 +52,9 @@ module mips_machine(
     defparam instruction_memory.has_default=1;
     defparam instruction_memory.default_file="output/instructions.mem";
 
-    always @(posedge clk) begin
-        $display("%h",inst);
-    end
+    // always @(posedge clk) begin
+    //     $display("%h",inst);
+    // end
 
     always @(halted)
         if (halted == 1)

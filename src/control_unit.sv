@@ -35,6 +35,10 @@ module control_unit (
         jump_register = 0;
         jump = 0;
         reg_write_enable = 0;
+        does_shift_amount_need = 0;
+        mem_or_reg = 0;
+        alu_src = 0;
+
         //reset control signals!
         case (opcode)
             RTYPE:
@@ -43,9 +47,8 @@ module control_unit (
                     halted = 1;
                 end
                 ADD : begin
-                    alu_src = 0;
                     reg_dest = 1;
-                    mem_or_reg = 0;
+                    //TODO!
                 end
                 default: begin
                     $display("No func in R type %b",func);
@@ -54,16 +57,12 @@ module control_unit (
             ADDIU: begin
                 reg_write_enable = 1;
                 alu_src = 1;
-                does_shift_amount_need = 0;
-                mem_or_reg = 0;
-                pc_or_mem = 0;
             end
 
             default: begin
                 $display("No Opcode %b", opcode);
             end
- 
-
+            
         endcase
 
     end
