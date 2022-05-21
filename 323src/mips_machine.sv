@@ -31,7 +31,7 @@ module mips_machine(
         
 
     memory instruction_memory(
-        .data_out(instruction_parts[3:0]), 
+        .data_out(instruction_parts[0:3]),
         .addr(inst_addr), 
         .data_in(),                 
         .we(1'b0), 

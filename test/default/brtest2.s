@@ -1,5 +1,6 @@
         # Basic branch test
 	.text
+        .set noreorder
 
 main:
         addiu $v0, $zero, 0xa
