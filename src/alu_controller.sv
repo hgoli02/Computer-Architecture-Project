@@ -10,90 +10,40 @@ module ALU_CONTROLLER(alu_operation, opcode, func);
 
     always @(*) begin
         
-
-    // R instructions
-    if (opcode == 6'b000000) begin
-        if(func == 6'b000100) //SLL, SLLV
-            alu_operation = SLL;
-
-        if(func == 6'b000110) //SRL, SRLV
-            alu_operation = SRL;
-
-        if(func == 6'b100110) //xor
-            alu_operation = XOR;
-
-        if(func == 6'b100010) // sub
-            alu_operation = SUB;
-
-        if(func == 6'b101010) // slt
-            alu_operation = SLT;
-
-        if(func == 6'b100011) //sub unsigned
-            alu_operation = SUBU;
-
-        if(func == 6'b100101) // OR
-            alu_operation = OR;
-
-        if(func == 6'b100111) //NOR
-            alu_operation = NOR;
-
-        if(func == 6'b100001) //add unsigned
-            alu_operation = ADDU;
-
-        if(func == 6'b011000) //mult
-            alu_operation = MULT;
-
-        if(func == 6'b011010) //div
-            alu_operation = DIV;
-
-        if(func == 6'b100100) //AND
-            alu_operation = AND;
-
-        if(func == 6'b100000) //add
-            alu_operation = ADD;
-        else
-            alu_operation = NOP;
-
-        
-    end
-    
-    // I instructions
-    else begin
-        if(opcode == 6'b001110) //XORi
-            alu_operation = XOR;
-
-        if(opcode == 6'b001010) //SLTi
-            alu_operation = SLT;
-
-        if(opcode == 6'b001000) //ADDi
-            alu_operation = ADD;
-
-        if(opcode == 6'b001100) //ANDi
-            alu_operation = AND;
-
-        if(opcode == 6'b001101) //ORi 
-            alu_operation = OR;   
-
-        if(opcode == 6'b001001) //ADDiu (unsigned) 
-            alu_operation = ADDU;
-
-        if(opcode == 6'b000100) //BEQ 
-            alu_operation = SUB;
-
-        if(opcode == 6'b000101) //BNE
-            alu_operation = SUB;
-
-        if(opcode == 6'b000110) //BLEZ
-            alu_operation = SUB;
-
-        if(opcode == 6'b000111) //BGTZ
-            alu_operation = SUB;
-
-        if(opcode == 6'b000001) //BGEZ 
-            alu_operation = SUB;
-        else
-            alu_operation = NOP;
-        
-        end
+        case (opcode)
+            // R instructions
+            6'b000000 :begin
+                case (func):
+                    6'b000100 : alu_operation = SLL; //SLL, SLLV
+                    6'b000110 : alu_operation = SRL; //SRL, SRLV
+                    6'b100110 : alu_operation = XOR; //XOR
+                    6'b100010 : alu_operation = SUB; // sub
+                    6'b101010 : alu_operation = SLT; //SLT
+                    6'b100011 : alu_operation = SUBU;//sub unsigned
+                    6'b100101 : alu_operation = OR; // OR
+                    6'b100111 : alu_operation = NOR; //NOR
+                    6'b100001 : alu_operation = ADDU; //add unsigned
+                    6'b011000 : alu_operation = MULT; //mult
+                    6'b011010 : alu_operation = DIV; //div
+                    6'b100100 : alu_operation = AND; //AND
+                    6'b100000 : alu_operation = ADD; //add
+                    default : alu_operation = NOP;
+                endcase
+            end
+            // I instructions
+            6'b001110 : alu_operation = XOR; //XORi
+            6'b001010 : alu_operation = SLT; //SLTi
+            6'b001000: alu_operation = ADD; //ADDi
+            6'b001100 : alu_operation = AND; //ANDi
+            6'b001101 : alu_operation = OR; //ORi 
+            6'b001001 : alu_operation = ADDU; //ADDiu (unsigned) 
+            6'b000100 : alu_operation = SUB; //BEQ 
+            6'b000101 : alu_operation = SUB; //BNE
+            6'b000110 : alu_operation = SUB; //BLEZ
+            6'b000111 : alu_operation = SUB; //BGTZ        
+            6'b000001 : alu_operation = SUB; //BGEZ             
+            default : alu_operation = NOP;
+            
+        endcase
     end
 endmodule
