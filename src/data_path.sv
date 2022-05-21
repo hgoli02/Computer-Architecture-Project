@@ -34,7 +34,7 @@ input does_shift_amount_need;
 output zero;
 output negative;
 input is_unsigned;
-wire [XLEN - 1:0] rs_data, rt_data, data_d, alu_second_source,alu_pre_input,
+wire [XLEN - 1:0] rs_data, rt_data, rd_data, alu_second_source,alu_pre_input,
                     alu_result;
 
 wire [4:0] write_reg_num_inst;
@@ -113,7 +113,7 @@ regfile RegisterFile(
         .halted(halted)
     );
 
-always @(*) begin
+always @(posedge clk) begin
     $display("%d %d", rd_num, rd_data);
 end
 
