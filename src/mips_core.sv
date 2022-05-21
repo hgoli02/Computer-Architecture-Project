@@ -32,6 +32,9 @@ module mips_core(
     wire link;
     wire does_shift_amount_need;
     wire reg_write_enable;
+    wire negative;
+    wire zero;
+    wire is_unsigned;
 
     data_path DataPath(
         .inst(inst),
@@ -52,7 +55,10 @@ module mips_core(
         .jump_register(jump_register),
         .pc_or_mem(pc_or_mem),
         .link(link),
-        .does_shift_amount_need(does_shift_amount_need)
+        .does_shift_amount_need(does_shift_amount_need),
+        .zero(zero),
+        .negative(negative),
+        .is_unsigned(is_unsigned)
     );
 
     control_unit ControlUnit(
@@ -70,7 +76,10 @@ module mips_core(
         .reg_write_enable(reg_write_enable),
         .does_shift_amount_need(does_shift_amount_need),
         .alu_operation(alu_operation),
-        .mem_write_en(mem_write_en)
+        .mem_write_en(mem_write_en),
+        .zero(zero),
+        .negative(negative),
+        .is_unsigned(is_unsigned)
     );
     
    
