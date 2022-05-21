@@ -31,7 +31,8 @@ module control_unit (
         AND = 6'b100100 , OR = 6'b100101, DIV = 6'b011010, MULT = 6'b011000, NOR = 6'b100111,
         XOR = 6'b100110 , SUB = 6'b100010, ANDi = 6'b001100 ,XORi = 6'b001110,ORi = 6'b001101,
         SLL = 6'b000100 , SLLV = 6'b000000 , SRL = 6'b000010 , SRLV = 6'b000110, SRA = 6'b000011,
-        SLT = 6'b101010 , SLTi = 6'b001010 , ADDU = 6'b100001, SUBU = 6'b100011;
+        SLT = 6'b101010 , SLTi = 6'b001010 , ADDU = 6'b100001, SUBU = 6'b100011 , JR = 6'b001000,
+        JAL = 6'b000011;
     always @(*) begin
         halted = 0;
         link = 0;
@@ -121,7 +122,9 @@ module control_unit (
                     reg_dest = 1;
                     reg_write_enable = 1;
                 end
-                
+                JR : begin
+                    jump_register = 1;
+                end
                 default: begin
                 end
             endcase
@@ -156,7 +159,12 @@ module control_unit (
                 reg_write_enable = 1;
                 alu_src = 1;
             end
-
+            JAL : begin 
+                jump = 1;
+                pc_or_mem = 1;
+                link = 1;
+                //TODO bug , pc + 8 -> R[31]
+            end
             default: begin
             
             end
