@@ -1,5 +1,5 @@
 module CU (
-    opcode, funct, halted, aluSrc, regDest, link, pcOrMem, memOrReg, pCSrc
+    opcode, func, halted, aluSrc, regDest, link, pcOrMem, memOrReg, pCSrc,clk, rst
 );
     output reg halted;
     output reg aluSrc;
@@ -11,7 +11,7 @@ module CU (
     input[5:0] opcode;
     input[5:0] funct;
 
-    ALU_CONTROLLER aluController();
+    //ALU_CONTROLLER aluController();
 
     localparam [5:0] RTYPE = 6'b0;
 
@@ -23,7 +23,7 @@ module CU (
         //reset control signals!
         case (opcode)
             RTYPE:
-            case (funct)
+            case (func)
                 SYSCALL: begin
                     halted = 1;
                 end
@@ -31,13 +31,9 @@ module CU (
                     aluSrc = 0;
                     regDst = 1;
                     memOrReg = 0;
-
-
                 end
-                default: 
             endcase
-
-            default: 
+ 
         endcase
 
     end
