@@ -28,6 +28,7 @@ module ALU #(
 
     always @(input1, input2, alu_operation) begin
         case(alu_operation)
+        
             XOR : out = input1 ^ input2;
 
             OR :  out = input1 | input2;

@@ -25,9 +25,8 @@ endmodule
 
 module shift_register #(
     parameter LEN = 32,
-    parameter COUNT = 1,
-    parameter 
-) (
+    parameter COUNT = 1
+    ) (
     clk,
     reset,
     data_in,
