@@ -1,5 +1,5 @@
 module CU (
-    opcode, func, halted, alu_src, reg_dest, link, pc_or_mem, mem_or_reg, branch
+    opcode, func, halted, alu_src, reg_dest, link, pc_or_mem, mem_or_reg, branch, jump_register,jump
 );
     output reg halted;
     output reg alu_src;
@@ -8,6 +8,8 @@ module CU (
     output reg pc_or_mem;
     output reg mem_or_reg;
     output reg branch;
+    output reg jump_register;
+    output reg jump;
 
     input[5:0] opcode;
     input[5:0] func;
@@ -23,6 +25,8 @@ module CU (
         link = 0;
         pc_or_mem = 0;
         branch = 0;
+        jump_register = 0;
+        jump = 0;
         //reset control signals!
         case (opcode)
             RTYPE:

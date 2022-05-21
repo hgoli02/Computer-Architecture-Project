@@ -14,7 +14,7 @@ input we;
 output reg [XLEN -1 : 0] data;
 
 always @(posedge clk , negedge reset) begin
-    if (reset)
+    if (reset == 0) //nedge clk!
         data = {XLEN{1'b0}};
     else
         if(we)

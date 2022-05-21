@@ -13,8 +13,8 @@ module mips_core(
     output  [XLEN - 1:0] inst_addr;
     input   [XLEN - 1:0] inst;
     output  [XLEN - 1:0] mem_addr;
-    output   wire [7:0]  mem_data_out[0:3];
-    input  wire [7:0]  mem_data_in[0:3];
+    input   wire [7:0]  mem_data_out[0:3];
+    output  wire [7:0]  mem_data_in[0:3];
     output         mem_write_en;
     output reg     halted;
     input          clk;
@@ -28,7 +28,7 @@ module mips_core(
     wire branch;
     wire jump;
     wire jump_register;
-    wire reg_or_mem;
+    wire pc_or_mem;
     wire link;
 
     data_path DataPath(
@@ -48,7 +48,7 @@ module mips_core(
         .branch(branch),
         .jump(jump),
         .jump_register(jump_register),
-        .reg_or_mem(reg_or_mem),
+        .pc_or_mem(pc_or_mem),
         .link(link)
     );
 
@@ -56,13 +56,14 @@ module mips_core(
         .halted(halted),
         .opcode(inst[31:26]),
         .func(inst[5:0]),
-        .alu_src(),
-        .reg_dest(), 
-        .link(),
-        .pc_or_mem(),
-        .mem_or_reg(),
-        .branch()
-
+        .alu_src(alu_src),
+        .reg_dest(reg_dest), 
+        .link(link),
+        .pc_or_mem(pc_or_mem),
+        .mem_or_reg(mem_or_reg),
+        .branch(branch),
+        .jump_register(jump_register),
+        .jump(jump)
     );
     
    
