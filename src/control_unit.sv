@@ -1,17 +1,17 @@
 module CU (
-    opcode, funct, halted, aluSrc, regDest, link, pcOrMem, memOrReg, pCSrc
+    opcode, funct, halted, alu_src, reg_dest, link, pc_or_mem, mem_or_reg, pc_src
 );
     output reg halted;
-    output reg aluSrc;
-    output reg regDst;
+    output reg alu_src;
+    output reg reg_dest;
     output reg link;
-    output reg pcOrMem;
-    output reg memOrReg;
+    output reg pc_or_mem;
+    output reg mem_or_reg;
 
     input[5:0] opcode;
     input[5:0] funct;
 
-    ALU_CONTROLLER aluController();
+    ALU_CONTROLLER aluController(.alu_operation(),.opcode(opcode),.func(func));
 
     localparam [5:0] RTYPE = 6'b0;
 
@@ -34,10 +34,10 @@ module CU (
 
 
                 end
-                default: 
+                // default: 
             endcase
 
-            default: 
+            // default: 
         endcase
 
     end

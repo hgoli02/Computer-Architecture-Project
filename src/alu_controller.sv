@@ -1,10 +1,8 @@
-module ALU_CONTROLLER(alu_operation, opcode, func, clk);
+module ALU_CONTROLLER(alu_operation, opcode, func);
 
-    output [3:0] alu_operation;
-    reg [3:0] alu_operation;
+    output reg[3:0] alu_operation;
     input [5:0] opcode;
     input [5:0] func;
-    input clk;
 
     localparam [3:0] NOP = 4'd0, XOR = 4'd1, OR = 4'd2, AND = 4'd3,
                      NOR = 4'd4 ,SLL = 4'd5, SRL = 4'd6, SLT = 4'd7, ADD = 4'd8,

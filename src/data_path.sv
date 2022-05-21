@@ -1,6 +1,6 @@
 module data_path (
-    inst,inst_addr , regDest, reg_write_enable, aluSrc, alu_operation, mem_addr, mem_data_in,mem_data_out,
-    memOrReg,clk,halted,rst_b,branch,jump,jump_register
+    inst,inst_addr , reg_dest, reg_write_enable, alu_src, alu_operation, mem_addr, mem_data_in,mem_data_out,
+    mem_or_reg,clk,halted,rst_b,branch,jump,jump_register,reg_or_mem,link
 );
 parameter XLEN = 32;
 input clk, halted, rst_b;
@@ -19,10 +19,12 @@ assign memory_out = {mem_data_in[0], mem_data_in[1], mem_data_in[2],mem_data_in[
 
 
 input [3:0] alu_operation; //TODO: alu Operation number of bytes to be determined
-input regDest; // R type and I type Mux from control unit
+input reg_dest; // R type and I type Mux from control unit
 input reg_write_enable; // register file write enable from control unit 
-input aluSrc; //aluSrc
-input memOrReg; // what data to write in reg file from control unit
+input alu_src; //alu_src
+input mem_or_reg; // what data to write in reg file from control unit
+input reg_or_mem;
+input link;
 input branch;
 input jump;
 input jump_register;
@@ -31,14 +33,20 @@ wire negative;
 wire [XLEN - 1:0] rs_data, rt_data, data_d, alu_second_source,
                     alu_result;
 
-wire [4:0] write_reg ;
+wire [4:0] write_reg_num_inst;
+wire [4:0] write_reg;
 
 wire [XLEN -1 : 0] sign_extended_first16bit_inst;
 assign sign_extended_first16bit_inst = {{16{inst[15]}}, inst[15:0]};
 
-Mux #(5) writeRegFileMux(.select(regDest),.in0(inst[20:16]),.in1(inst[15:11]),.out(write_reg));
-Mux aluInputMux(.select(aluSrc),.in0(rt_data),.in1(sign_extended_first16bit_inst),.out(alu_second_source));
-Mux memOrAluResultMux(.select(memOrReg),.in0(alu_result),.in1(memory_out),.out(data_d));
+Mux #(5) write_reg_file_mux(.select(reg_dest),.in0(inst[20:16]),.in1(inst[15:11]),.out(write_reg_num_inst));
+Mux #(5) write_reg_if_jal_mux(.select(link),.in0(write_reg_num_inst),.in1(5'd31),.out(write_reg));
+Mux alu_input_mux(.select(alu_src),.in0(rt_data),.in1(sign_extended_first16bit_inst),.out(alu_second_source));
+
+
+wire [XLEN -1 : 0] mem_or_alu_write_data;
+Mux mem_or_alu_result_mux(.select(mem_or_reg),.in0(alu_result),.in1(memory_out),.out(mem_or_alu_write_data));
+Mux memoralu_or_pc_incremented_mux(.select(reg_or_mem),.in0(mem_or_alu_write_data),.in1(pc_incremented),.out(data_d));
 
 
 ALU alu(.input1(rs_data), .input2(alu_second_source), .out(alu_result), .zero(zero),.negative(negative),.alu_operation(alu_operation));
