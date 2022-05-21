@@ -103,6 +103,7 @@ regfile RegisterFile(
         .clk(clk),
         .rst_b(rst_b),
         .halted(halted)
+        
     );
 
 

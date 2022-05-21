@@ -31,6 +31,8 @@ module mips_core(
     wire pc_or_mem;
     wire link;
     wire does_shift_amount_need;
+    wire reg_write_enable;
+
     data_path DataPath(
         .inst(inst),
         .inst_addr(inst_addr),
@@ -64,7 +66,10 @@ module mips_core(
         .mem_or_reg(mem_or_reg),
         .branch(branch),
         .jump_register(jump_register),
-        .jump(jump)
+        .jump(jump),
+        .reg_write_enable(reg_write_enable),
+        .does_shift_amount_need(does_shift_amount_need),
+        .alu_operation(alu_operation)
     );
     
    

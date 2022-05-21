@@ -51,6 +51,8 @@ module ALU_CONTROLLER(alu_operation, opcode, func);
 
         if(func == 6'b100000) //add
             alu_operation = ADD;
+        else
+            alu_operation = NOP;
 
         
     end
@@ -82,15 +84,16 @@ module ALU_CONTROLLER(alu_operation, opcode, func);
             alu_operation = SUB;
 
         if(opcode == 6'b000110) //BLEZ
-            alu_operation = NOP;
+            alu_operation = SUB;
 
         if(opcode == 6'b000111) //BGTZ
-            alu_operation = NOP;
+            alu_operation = SUB;
 
         if(opcode == 6'b000001) //BGEZ 
+            alu_operation = SUB;
+        else
             alu_operation = NOP;
         
-        
         end
-        end
+    end
 endmodule
