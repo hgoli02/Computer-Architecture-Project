@@ -1,4 +1,5 @@
-module CU (
+
+module control_unit (
     opcode, func, halted, alu_src, reg_dest, link, pc_or_mem, mem_or_reg, branch, jump_register,jump
 );
     output reg halted;

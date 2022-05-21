@@ -1,6 +1,6 @@
 module data_path (
     inst,inst_addr , reg_dest, reg_write_enable, alu_src, alu_operation, mem_addr, mem_data_in,mem_data_out,
-    mem_or_reg,clk,halted,rst_b,branch,jump,jump_register,pc_or_mem,link
+    mem_or_reg,clk,halted,rst_b,branch,jump,jump_register,pc_or_mem,link,does_shift_amount_need
 );
 parameter XLEN = 32;
 input clk, halted, rst_b;
@@ -28,26 +28,30 @@ input link;
 input branch;
 input jump;
 input jump_register;
+input does_shift_amount_need;
 wire zero;
 wire negative;
-wire [XLEN - 1:0] rs_data, rt_data, data_d, alu_second_source,
+wire [XLEN - 1:0] rs_data, rt_data, data_d, alu_second_source,alu_pre_input,
                     alu_result;
 
 wire [4:0] write_reg_num_inst;
 wire [4:0] write_reg;
 
 wire [XLEN -1 : 0] sign_extended_first16bit_inst;
-assign sign_extended_first16bit_inst = {{16{inst[15]}}, inst[15:0]};
+assign sign_extended_first16bit_inst = {{(XLEN/2){inst[15]}}, inst[15:0]};
 
 Mux #(5) write_reg_file_mux(.select(reg_dest),.in0(inst[20:16]),.in1(inst[15:11]),.out(write_reg_num_inst));
 Mux #(5) write_reg_if_jal_mux(.select(link),.in0(write_reg_num_inst),.in1(5'd31),.out(write_reg));
-Mux alu_input_mux(.select(alu_src),.in0(rt_data),.in1(sign_extended_first16bit_inst),.out(alu_second_source));
-
 
 wire [XLEN -1 : 0] mem_or_alu_write_data;
 Mux mem_or_alu_result_mux(.select(mem_or_reg),.in0(alu_result),.in1(memory_out),.out(mem_or_alu_write_data));
 Mux memoralu_or_pc_incremented_mux(.select(pc_or_mem),.in0(mem_or_alu_write_data),.in1(pc_incremented),.out(data_d));
 
+wire[XLEN - 1 : 0] shift_amount_32bit;
+assign shift_amount_32bit = {{(XLEN - 5){1'b0}},inst[10:6]};
+
+Mux alu_input_mux(.select(alu_src),.in0(rt_data),.in1(sign_extended_first16bit_inst),.out(alu_pre_input));
+Mux select_shift_amount_mux(.select(does_shift_amount_need),.in0(alu_pre_input),.in1(shift_amount_32bit),.out(alu_second_source));
 
 ALU alu(.input1(rs_data), .input2(alu_second_source), .out(alu_result), .zero(zero),.negative(negative),.alu_operation(alu_operation));
 
