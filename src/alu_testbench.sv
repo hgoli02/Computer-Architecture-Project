@@ -1,5 +1,5 @@
-`include "alu.v"
-`default_nettype none
+// `include "alu.v"
+// `default_nettype none
 
 module tb_alu;
 reg [31:0] input1;
