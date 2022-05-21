@@ -1,6 +1,3 @@
-`include "alu.v"
-`default_nettype none
-
 module tb_alu;
 reg [31:0] input1;
 reg [31:0] input2;
