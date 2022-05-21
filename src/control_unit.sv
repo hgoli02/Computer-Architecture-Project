@@ -1,7 +1,7 @@
 
 module control_unit (
     opcode, func, halted, alu_src, reg_dest, link, pc_or_mem, mem_or_reg, branch, jump_register,jump,
-    reg_write_enable, does_shift_amount_need, alu_operation
+    reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en
 );
     output reg halted;
     output reg alu_src;
@@ -15,6 +15,7 @@ module control_unit (
     output reg reg_write_enable;
     output reg does_shift_amount_need;
     output [3:0] alu_operation;
+    output reg mem_write_en;
 
 
     input[5:0] opcode;
@@ -38,6 +39,7 @@ module control_unit (
         does_shift_amount_need = 0;
         mem_or_reg = 0;
         alu_src = 0;
+        mem_write_en = 0;
 
         //reset control signals!
         case (opcode)
@@ -48,10 +50,11 @@ module control_unit (
                 end
                 ADD : begin
                     reg_dest = 1;
+                    reg_write_enable = 1;
                     //TODO!
                 end
                 default: begin
-                    $display("No func in R type %b",func);
+                    
                 end
             endcase
             ADDIU: begin
@@ -60,7 +63,7 @@ module control_unit (
             end
 
             default: begin
-                $display("No Opcode %b", opcode);
+
             end
             
         endcase

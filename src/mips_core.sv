@@ -69,7 +69,8 @@ module mips_core(
         .jump(jump),
         .reg_write_enable(reg_write_enable),
         .does_shift_amount_need(does_shift_amount_need),
-        .alu_operation(alu_operation)
+        .alu_operation(alu_operation),
+        .mem_write_en(mem_write_en)
     );
     
    
