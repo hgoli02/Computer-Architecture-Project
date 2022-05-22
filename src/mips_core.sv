@@ -80,5 +80,9 @@ module mips_core(
         .is_unsigned(is_unsigned)
     );
     
-   
+always @(*) begin
+    $display("we = %b ,mem_addr = %h , mem_in = %h, mem_out = %h",mem_write_en,mem_addr,{mem_data_in[3],mem_data_in[2],mem_data_in[1],mem_data_in[0]},
+     {mem_data_out[3],mem_data_out[2],mem_data_out[1],mem_data_out[0]});
+end
+
 endmodule

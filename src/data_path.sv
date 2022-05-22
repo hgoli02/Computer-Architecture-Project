@@ -15,7 +15,7 @@ wire[XLEN - 1:0] memory_in;
 wire[XLEN - 1:0] memory_out;
 
 
-assign memory_in = {mem_data_in[3], mem_data_in[2], mem_data_in[1],mem_data_in[0]};      //TODO check indexes (!!!!)
+assign {mem_data_in[3], mem_data_in[2], mem_data_in[1],mem_data_in[0]} = memory_in;      //TODO check indexes (!!!!)
 assign memory_out = {mem_data_in[3], mem_data_in[2], mem_data_in[1],mem_data_in[0]};
 
 
@@ -115,9 +115,5 @@ regfile RegisterFile(
         .rst_b(rst_b),
         .halted(halted)
     );
-
-// always @(posedge clk ,posedge reg_write_enable) begin
-//     $display("rd_data = %h , rd_num = %d , pc_value = %h , pc_incremented = %h",rd_data,rd_num,pc_value,pc_incremented);
-// end
 
 endmodule

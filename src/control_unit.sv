@@ -172,7 +172,6 @@ module control_unit (
             end
 
             SW : begin
-                mem_or_reg = 1;
                 alu_src = 1;
                 mem_write_en = 1;
             end
