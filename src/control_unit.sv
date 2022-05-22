@@ -161,8 +161,9 @@ module control_unit (
                 alu_src = 1;
             end
             JAL : begin 
-                jump = 1;
                 pc_or_mem = 1;
+                reg_write_enable = 1;
+                jump = 1;
                 //TODO bug , pc + 8 -> R[31]
             end
             LUi : begin

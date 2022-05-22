@@ -75,7 +75,7 @@ Register pc(.clk(clk),.reset(rst_b),.data_in(pc_input),.data(pc_value),.we(1'b1)
 wire[XLEN -1 : 0 ] pc_incremented;
 wire[XLEN -1 : 0 ] pc_increment_value;
 
-Mux select_increment_value(.select(pc_or_mem),.in0(32'd4),.in1(32'd8),.out(pc_increment_value));
+Mux select_increment_value(.select(pc_or_mem),.in0(32'd4),.in1(32'd4),.out(pc_increment_value));
 
 Adder pc_incrementer(pc_value,pc_increment_value,pc_incremented);
 
@@ -116,8 +116,8 @@ regfile RegisterFile(
         .halted(halted)
     );
 
-always @(posedge clk) begin
-    $display($time, " rd=%d ,inp1_alu = %d ,inp2_alu = %d ,rd_data=%d , does_sh = %b", rd_num,alu_first_source,alu_second_source,rd_data,does_shift_amount_need);
-end
+// always @(posedge clk ,posedge reg_write_enable) begin
+//     $display("rd_data = %h , rd_num = %d , pc_value = %h , pc_incremented = %h",rd_data,rd_num,pc_value,pc_incremented);
+// end
 
 endmodule
