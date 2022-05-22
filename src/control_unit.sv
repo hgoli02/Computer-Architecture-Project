@@ -169,6 +169,7 @@ module control_unit (
             LW : begin
                 mem_or_reg = 1;
                 alu_src = 1;
+                reg_write_enable = 1;
             end
 
             SW : begin

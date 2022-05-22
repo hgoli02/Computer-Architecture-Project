@@ -16,7 +16,7 @@ wire[XLEN - 1:0] memory_out;
 
 
 assign {mem_data_in[3], mem_data_in[2], mem_data_in[1],mem_data_in[0]} = memory_in;      //TODO check indexes (!!!!)
-assign memory_out = {mem_data_in[3], mem_data_in[2], mem_data_in[1],mem_data_in[0]};
+assign memory_out = {mem_data_out[3], mem_data_out[2], mem_data_out[1],mem_data_out[0]};
 
 
 
@@ -116,4 +116,7 @@ regfile RegisterFile(
         .halted(halted)
     );
 
+    always @(*) begin
+        $display("rd_data = %h, rd_num = %h",rd_data, rd_num);
+    end
 endmodule
