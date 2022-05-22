@@ -70,7 +70,7 @@ assign memory_in = rt_data;
 wire[XLEN -1 : 0] pc_value;
 wire[XLEN -1 : 0] pc_input;
 assign inst_addr = pc_value;
-register pc(.clk(clk),.reset(rst_b),.data_in(pc_input),.data(pc_value),.we(1'b1));
+Register pc(.clk(clk),.reset(rst_b),.data_in(pc_input),.data(pc_value),.we(1'b1));
 
 
 wire[XLEN -1 : 0 ] pc_incremented;

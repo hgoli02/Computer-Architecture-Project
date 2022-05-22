@@ -1,4 +1,4 @@
-module register #(
+module Register #(
     parameter XLEN = 32
 ) (
     clk,
@@ -23,7 +23,7 @@ end
     
 endmodule
 
-module shift_register #(
+module ShiftRegister #(
     parameter LEN = 32,
     parameter COUNT = 1
     ) (

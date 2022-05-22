@@ -1,12 +1,4 @@
-module ALU #(
-    parameter XLEN = 32
-) (
-    input1,
-    input2,
-    alu_operation,
-    out,
-    negative,
-    zero
+module ALU #(parameter XLEN = 32) (input1, input2, alu_operation, out, negative, zero
     //overflow
 );
     
@@ -33,31 +25,18 @@ module ALU #(
 
     always @(input1, input2, alu_operation) begin
         case(alu_operation)
-        
-            XOR : out = input1 ^ input2;
-
-            OR :  out = input1 | input2;
-
-            AND :  out = input1 & input2;
-
-            NOR :  out = ~(input1 | input2);
-
-            SLL : out = input2 << input1;
-
-            SRL : out = input2 >> input1;
-
-            ADD : out = input1 + input2;
-
-            ADDU : out = input1 + input2;
-
-            SUB : out = input1 - input2;
-
-            SUBU : out = input1 - input2;
-            
-            MULT : out = input1 * input2;
-
-            DIV : out = input1 / input2;
-
+            XOR :    out = input1 ^ input2;
+            OR :     out = input1 | input2;
+            AND :    out = input1 & input2;
+            NOR :    out = ~(input1 | input2);
+            SLL :    out = input2 << input1;
+            SRL :    out = input2 >> input1;
+            ADD :    out = input1 + input2;
+            ADDU :   out = input1 + input2;
+            SUB :    out = input1 - input2;
+            SUBU :   out = input1 - input2;
+            MULT :   out = input1 * input2;
+            DIV :    out = input1 / input2;
             SLT : 
                 begin
                 out = input1 - input2;
@@ -67,15 +46,13 @@ module ALU #(
                 out = 0;
                 end
 
-            SRA : out = signed_input2 >>> input1; 
-            
-            NOP : out = input1;
-            default : out = {XLEN{1'b0}};
+            SRA :    out = signed_input2 >>> input1; 
+            NOP :    out = input1;
+            default: out = {XLEN{1'b0}};
         endcase
     end
     always @(alu_operation) begin
         $display("alu_op = %d , input1 = %d , input2 = %d ,out = %d",alu_operation,input1,input2,out);
     end
-
 
 endmodule
