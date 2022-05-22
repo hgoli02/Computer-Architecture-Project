@@ -37,15 +37,7 @@ module ALU #(parameter XLEN = 32) (input1, input2, alu_operation, out, negative,
             SUBU :   out = input1 - input2;
             MULT :   out = input1 * input2;
             DIV :    out = input1 / input2;
-            SLT : 
-                begin
-                out = input1 - input2;
-                if(out[31])
-                out = 1;
-                else
-                out = 0;
-                end
-
+            SLT :    out = signed_input1 < signed_input2 ? 1 : 0;
             SRA :    out = signed_input2 >>> input1; 
             NOP :    out = input1;
             default: out = {XLEN{1'b0}};
