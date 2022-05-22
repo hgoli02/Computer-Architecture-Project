@@ -1,6 +1,6 @@
 module data_path (
     inst,inst_addr , reg_dest, reg_write_enable, alu_src, alu_operation, mem_addr, mem_data_in,mem_data_out,
-    mem_or_reg,clk,halted,rst_b,branch,jump,jump_register,pc_or_mem,link,does_shift_amount_need,zero,negative,
+    mem_or_reg,clk,halted,rst_b,branch,jump,jump_register,pc_or_mem,does_shift_amount_need,zero,negative,
     is_unsigned
 
 );
@@ -26,7 +26,6 @@ input reg_write_enable; // register file write enable from control unit
 input alu_src; //alu_src
 input mem_or_reg; // what data to write in reg file from control unit
 input pc_or_mem;
-input link;
 input branch;
 input jump;
 input jump_register;
@@ -42,7 +41,7 @@ wire [4:0] rd_num;
 
 
 Mux #(5) write_reg_file_mux(.select(reg_dest),.in0(inst[20:16]),.in1(inst[15:11]),.out(write_reg_num_inst));
-Mux #(5) write_reg_if_jal_mux(.select(link),.in0(write_reg_num_inst),.in1(5'd31),.out(rd_num));
+Mux #(5) write_reg_if_jal_mux(.select(pc_or_mem),.in0(write_reg_num_inst),.in1(5'd31),.out(rd_num));
 
 wire [XLEN -1 : 0] mem_or_alu_write_data;
 Mux mem_or_alu_result_mux(.select(mem_or_reg),.in0(alu_result),.in1(memory_out),.out(mem_or_alu_write_data));
@@ -74,7 +73,11 @@ Register pc(.clk(clk),.reset(rst_b),.data_in(pc_input),.data(pc_value),.we(1'b1)
 
 
 wire[XLEN -1 : 0 ] pc_incremented;
-Adder pc_incrementer(pc_value,32'd4,pc_incremented);
+wire[XLEN -1 : 0 ] pc_increment_value;
+
+Mux select_increment_value(.select(pc_or_mem),.in0(32'd4),.in1(32'd8),.out(pc_increment_value));
+
+Adder pc_incrementer(pc_value,pc_increment_value,pc_incremented);
 
 wire [XLEN -1 : 0] shifted_first16bit_extended_inst;
 assign shifted_first16bit_extended_inst = sign_extended_first16bit_inst << 2;
