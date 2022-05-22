@@ -34,7 +34,7 @@ input does_shift_amount_need;
 input is_unsigned;
 output zero;
 output negative;
-wire [XLEN - 1:0] rs_data, rt_data, rd_data, alu_second_source,alu_pre_input,
+wire [XLEN - 1:0] rs_data, rt_data, rd_data, alu_second_source,alu_first_source,
                     alu_result;
 
 wire [4:0] write_reg_num_inst;
@@ -57,11 +57,11 @@ wire [XLEN -1 : 0] immediate_data;
 
 Mux unsigned_mux(.select(is_unsigned),.in0(sign_extended_first16bit_inst),.in1({{(XLEN/2){1'b0}},inst[15:0]}),.out(immediate_data));
 
-Mux alu_input_mux(.select(alu_src),.in0(rt_data),.in1(immediate_data),.out(alu_pre_input));
+Mux alu_input2_mux(.select(alu_src),.in0(rt_data),.in1(immediate_data),.out(alu_second_source));
 
-Mux select_shift_amount_mux(.select(does_shift_amount_need),.in0(alu_pre_input),.in1(shift_amount_32bit),.out(alu_second_source));
+Mux select_shift_amount_mux(.select(does_shift_amount_need),.in0(rs_data),.in1(shift_amount_32bit),.out(alu_first_source));
 
-ALU alu(.input1(rs_data), .input2(alu_second_source), .out(alu_result), .zero(zero),.negative(negative),.alu_operation(alu_operation));
+ALU alu(.input1(alu_first_source), .input2(alu_second_source), .out(alu_result), .zero(zero),.negative(negative),.alu_operation(alu_operation));
 
 assign mem_addr = alu_result;
 assign memory_in = rt_data;
@@ -114,7 +114,7 @@ regfile RegisterFile(
     );
 
 always @(posedge clk) begin
-    $display($time, " rd=%d ,rs = %d ,rt = %d ,rd_data=%d, inst = %h", rd_num, rs_data,rt_data,rd_data,inst);
+    $display($time, " rd=%d ,inp1_alu = %d ,inp2_alu = %d ,rd_data=%d , does_sh = %b", rd_num,alu_first_source,alu_second_source,rd_data,does_shift_amount_need);
 end
 
 endmodule

@@ -30,7 +30,7 @@ module control_unit (
         BNE = 6'b000101 , JUMP = 6'b000010,BLEZ = 6'b000110,BGEZ = 6'b000001,
         AND = 6'b100100 , OR = 6'b100101, DIV = 6'b011010, MULT = 6'b011000, NOR = 6'b100111,
         XOR = 6'b100110 , SUB = 6'b100010, ANDi = 6'b001100 ,XORi = 6'b001110,ORi = 6'b001101,
-        SLL = 6'b000100 , SLLV = 6'b000000 , SRL = 6'b000010 , SRLV = 6'b000110, SRA = 6'b000011,
+        SLLV = 6'b000100 , SLL = 6'b000000 , SRL = 6'b000010 , SRLV = 6'b000110, SRA = 6'b000011,
         SLT = 6'b101010 , SLTi = 6'b001010 , ADDU = 6'b100001, SUBU = 6'b100011 , JR = 6'b001000,
         JAL = 6'b000011;
     always @(*) begin
@@ -146,14 +146,17 @@ module control_unit (
             ANDi: begin
                 reg_write_enable = 1;
                 alu_src = 1;
+                is_unsigned = 1;
             end
             XORi: begin
                 reg_write_enable = 1;
                 alu_src = 1;
+                is_unsigned = 1;
             end
             ORi: begin
                 reg_write_enable = 1;
                 alu_src = 1;
+                is_unsigned = 1;
             end
             SLTi : begin
                 reg_write_enable = 1;
@@ -184,7 +187,7 @@ module control_unit (
                 default:begin end
             endcase
         end
-        $display("should_branch = %d , branch = %d , zero = %d , negative = %d,opcode = %d",should_branch,branch,zero,negative,opcode);
+        // $display("should_branch = %d , branch = %d , zero = %d , negative = %d,opcode = %d",should_branch,branch,zero,negative,opcode);
 
     end
 endmodule

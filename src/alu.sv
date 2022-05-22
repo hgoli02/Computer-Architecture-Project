@@ -16,7 +16,12 @@ module ALU #(
     output zero;
     output negative;
     //output overflow;
-    // reg signed [XLEN - 1 : 0] signed_temp = 0;
+    
+    wire signed [XLEN - 1 : 0] signed_input1;
+    wire signed [XLEN - 1 : 0] signed_input2;
+    assign signed_input1 = input1;
+    assign signed_input2 = input2;
+
     localparam [3:0] NOP = 4'd0, XOR = 4'd1, OR = 4'd2, AND = 4'd3,
                      NOR = 4'd4 ,SLL = 4'd5, SRL = 4'd6, SLT = 4'd7, ADD = 4'd8,
                      ADDU = 4'd9, SUB = 4'd10, SUBU = 4'd11, MULT = 4'd12, DIV = 4'd13,SRA = 4'd14 ;
@@ -26,7 +31,7 @@ module ALU #(
     assign negative = out[XLEN - 1];
 
 
-    always @(input1, input2, alu_operation) begin/* verilator lint_off LATCH */
+    always @(input1, input2, alu_operation) begin
         case(alu_operation)
         
             XOR : out = input1 ^ input2;
@@ -37,9 +42,9 @@ module ALU #(
 
             NOR :  out = ~(input1 | input2);
 
-            SLL : out = input1 << input2;
+            SLL : out = input2 << input1;
 
-            SRL : out = input1 >> input2;
+            SRL : out = input2 >> input1;
 
             ADD : out = input1 + input2;
 
@@ -62,14 +67,15 @@ module ALU #(
                 out = 0;
                 end
 
-            SRA : begin
-                // signed_temp <= input1;
-                // out = signed_temp >>> input2; //TODO signed
-                out = input1 >>> input2; 
-            end
+            SRA : out = signed_input2 >>> input1; 
+            
             NOP : out = input1;
             default : out = {XLEN{1'b0}};
         endcase
     end
+    always @(alu_operation) begin
+        $display("alu_op = %d , input1 = %d , input2 = %d ,out = %d",alu_operation,input1,input2,out);
+    end
+
 
 endmodule
