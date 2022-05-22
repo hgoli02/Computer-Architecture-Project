@@ -15,8 +15,8 @@ wire[XLEN - 1:0] memory_in;
 wire[XLEN - 1:0] memory_out;
 
 
-assign memory_in = {mem_data_in[0], mem_data_in[1], mem_data_in[2],mem_data_in[3]};      //TODO check indexes (!!!!)
-assign memory_out = {mem_data_in[0], mem_data_in[1], mem_data_in[2],mem_data_in[3]};
+assign memory_in = {mem_data_in[3], mem_data_in[2], mem_data_in[1],mem_data_in[0]};      //TODO check indexes (!!!!)
+assign memory_out = {mem_data_in[3], mem_data_in[2], mem_data_in[1],mem_data_in[0]};
 
 
 
