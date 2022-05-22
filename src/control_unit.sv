@@ -1,11 +1,10 @@
 module control_unit (
-    opcode, func, halted, alu_src, reg_dest, link, pc_or_mem, mem_or_reg, branch, jump_register,jump,
+    opcode, func, halted, alu_src, reg_dest, pc_or_mem, mem_or_reg, branch, jump_register,jump,
     reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned
 );
     output reg halted;
     output reg alu_src;
     output reg reg_dest;
-    output reg link;
     output reg pc_or_mem;
     output reg mem_or_reg;
     output reg branch;
@@ -32,10 +31,9 @@ module control_unit (
         XOR = 6'b100110 , SUB = 6'b100010, ANDi = 6'b001100 ,XORi = 6'b001110,ORi = 6'b001101,
         SLLV = 6'b000100 , SLL = 6'b000000 , SRL = 6'b000010 , SRLV = 6'b000110, SRA = 6'b000011,
         SLT = 6'b101010 , SLTi = 6'b001010 , ADDU = 6'b100001, SUBU = 6'b100011 , JR = 6'b001000,
-        JAL = 6'b000011, SW = 6'b101011, LW = 6'b100011;
+        JAL = 6'b000011, SW = 6'b101011, LW = 6'b100011, LUi = 6'b001111;
     always @(*) begin
         halted = 0;
-        link = 0;
         pc_or_mem = 0;
         branch = 0;
         jump_register = 0;
@@ -163,9 +161,9 @@ module control_unit (
                 alu_src = 1;
             end
             JAL : begin 
-                jump = 1;
                 pc_or_mem = 1;
-                link = 1;
+                reg_write_enable = 1;
+                jump = 1;
                 //TODO bug , pc + 8 -> R[31]
             end
             LW : begin
@@ -177,6 +175,10 @@ module control_unit (
                 mem_or_reg = 1;
                 alu_src = 1;
                 mem_write_en = 1;
+            end
+            LUi : begin
+                reg_write_enable = 1;
+                alu_src = 1;
             end
             default: begin
             

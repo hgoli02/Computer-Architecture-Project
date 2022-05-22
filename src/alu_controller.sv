@@ -6,7 +6,8 @@ module ALU_CONTROLLER(alu_operation, opcode, func);
 
     localparam [3:0] NOP = 4'd0, XOR = 4'd1, OR = 4'd2, AND = 4'd3,
                      NOR = 4'd4 ,SLL = 4'd5, SRL = 4'd6, SLT = 4'd7, ADD = 4'd8,
-                     ADDU = 4'd9, SUB = 4'd10, SUBU = 4'd11, MULT = 4'd12, DIV = 4'd13,SRA = 4'd14;
+                     ADDU = 4'd9, SUB = 4'd10, SUBU = 4'd11, MULT = 4'd12, DIV = 4'd13,
+                     LUI = 4'd15 ,SRA = 4'd14;
 
     always @(opcode, func) begin
         
@@ -42,6 +43,7 @@ module ALU_CONTROLLER(alu_operation, opcode, func);
             6'b001001 : alu_operation = ADDU; //ADDiu (unsigned) 
             6'b000100 : alu_operation = SUB; //BEQ 
             6'b000101 : alu_operation = SUB; //BNE
+            6'b001111 : alu_operation = LUI; //LUi
             6'b000110 : alu_operation = NOP; //BLEZ
             6'b000111 : alu_operation = NOP; //BGTZ        
             6'b000001 : alu_operation = NOP; //BGEZ             
