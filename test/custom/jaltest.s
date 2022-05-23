@@ -1,4 +1,5 @@
 	.text
+        .set noreorder
 main:   
         addi $a0, $0, 5
         addi $a1, $0, 10

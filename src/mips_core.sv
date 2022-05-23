@@ -54,7 +54,6 @@ module mips_core(
         .jump(jump),
         .jump_register(jump_register),
         .pc_or_mem(pc_or_mem),
-        .link(link),
         .does_shift_amount_need(does_shift_amount_need),
         .zero(zero),
         .negative(negative),
@@ -67,7 +66,6 @@ module mips_core(
         .func(inst[5:0]),
         .alu_src(alu_src),
         .reg_dest(reg_dest), 
-        .link(link),
         .pc_or_mem(pc_or_mem),
         .mem_or_reg(mem_or_reg),
         .branch(branch),
@@ -82,5 +80,9 @@ module mips_core(
         .is_unsigned(is_unsigned)
     );
     
-   
+// always @(*) begin
+//     $display("we = %b ,mem_addr = %h , mem_in = %h, mem_out = %h",mem_write_en,mem_addr,{mem_data_in[3],mem_data_in[2],mem_data_in[1],mem_data_in[0]},
+//      {mem_data_out[3],mem_data_out[2],mem_data_out[1],mem_data_out[0]});
+// end
+
 endmodule
