@@ -1,4 +1,4 @@
 
 # Computer Architecture Project
 
-![alt text](https://pasteboard.co/ez6U0PbL2CLq.png)
+![alt text](https://s25.picofile.com/file/8450352468/Visio.jpg)
