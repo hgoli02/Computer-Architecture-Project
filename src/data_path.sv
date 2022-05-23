@@ -116,7 +116,7 @@ regfile RegisterFile(
         .halted(halted)
     );
 
-    always @(*) begin
-        $display("rd_data = %h, rd_num = %h",rd_data, rd_num);
-    end
+    // always @(*) begin
+    //     $display("rd_data = %h, rd_num = %h",rd_data, rd_num);
+    // end
 endmodule
