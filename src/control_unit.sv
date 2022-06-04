@@ -14,6 +14,7 @@ module control_unit (
     output reg reg_write_enable;
     output reg does_shift_amount_need;
     output reg mem_write_en;
+    output reg proc;
     output [3:0] alu_operation;
     reg should_branch;
 
@@ -200,6 +201,19 @@ module control_unit (
             endcase
         end
         // $display("should_branch = %d , branch = %d , zero = %d , negative = %d,opcode = %d",should_branch,branch,zero,negative,opcode);
+    end
 
+    always @(*) begin
+        case (opcode)
+            LW, SW: begin
+                if(hit == 0) 
+                    proc = 1;                   
+                else
+                    proc = 0;
+            end 
+            default: begin
+                
+            end
+        endcase
     end
 endmodule
