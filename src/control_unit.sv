@@ -47,6 +47,7 @@ module control_unit (
         reg_dest = 0;
         should_branch = 0;
         is_unsigned = 0;
+        
         //reset control signals!
         case (opcode)
             RTYPE:
@@ -170,12 +171,12 @@ module control_unit (
             LW : begin
                 mem_or_reg = 1;
                 alu_src = 1;
-                reg_write_enable = 1;
+                //reg_write_enable = 1;
             end
 
             SW : begin
                 alu_src = 1;
-                mem_write_en = 1;
+                //mem_write_en = 1;
             end
             LUi : begin
                 reg_write_enable = 1;
@@ -202,7 +203,6 @@ module control_unit (
         end
         // $display("should_branch = %d , branch = %d , zero = %d , negative = %d,opcode = %d",should_branch,branch,zero,negative,opcode);
     end
-
     always @(*) begin
         case (opcode)
             LW, SW: begin
@@ -212,7 +212,7 @@ module control_unit (
                     proc = 0;
             end 
             default: begin
-                
+                proc = 0;
             end
         endcase
     end
