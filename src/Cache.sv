@@ -63,7 +63,9 @@ module cache (
                     valid_bits [addr[12:2]] <= 1'b1;
                 end else begin
                     dirty_bits [addr[12:2]] <= 1'b0;
+                    valid_bits [addr[12:2]] <= 1'b1;
                 end
+                cache_tags[addr[12:2]] <= addr[31:18];
                 mem [addr[12:2]] <= data_in[0];
                 mem [addr[12:2] + 1] <= data_in[1];
                 mem [addr[12:2] + 2] <= data_in[2];
