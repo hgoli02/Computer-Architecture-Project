@@ -117,8 +117,5 @@ regfile RegisterFile(
         .halted(halted)
     );
 
-
-    // always @(*) begin
-    //     $display("rd_data = %h, rd_num = %h",rd_data, rd_num);
-    // end
+    initial $monitor("pc_value = %h , pc_we = %b",pc_value,pc_we);
 endmodule

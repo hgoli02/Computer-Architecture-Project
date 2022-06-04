@@ -40,6 +40,10 @@ module memory_datapath (
         .rst_b(rst_b)
     );
 
+    always @(posedge clk)begin
+        $display("addr = %h , hit = %h ,dirty = %b",addr,hit,dirty_bit);
+    end
+
     assign mem_addr = mem_in_select == 1 ? cache_miss_addr : addr;
     assign mem_data_in = data_out;
 

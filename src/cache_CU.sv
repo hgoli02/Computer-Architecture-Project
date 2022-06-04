@@ -1,5 +1,4 @@
 module cache_cu (
-    proc,
     dirty,
     cache_we,
     mem_we,
@@ -8,8 +7,7 @@ module cache_cu (
     rst_b,
     hit,
     opcode,
-    reg_write_enable,
-    mem_write_en
+    reg_write_enable
 );
     integer counter;
     output reg cache_we;
@@ -20,8 +18,8 @@ module cache_cu (
     input clk;
     input dirty;
     input rst_b;
-    input proc;
     input hit;
+    input[5:0] opcode;
 
     localparam [5:0] RTYPE = 6'b000000, ADDIU = 6'b001001, ADDi = 6'b001000,
         SYSCALL = 6'b001100, ADD = 6'b100000 , BEQ = 6'b000100,BGTZ = 6'b000111,
@@ -37,13 +35,12 @@ module cache_cu (
     reg[1:0] pstate;
     reg[1:0] nstate;
 
-    initial begin
-        $monitor("%b", hit);
-    end
+    initial $monitor("p_state = %h , opcode = %h , counter = %d , hit = %b",pstate,opcode,counter,hit);   
 
     //Handle FSM states
     always @(*) begin
         if(opcode == LW || opcode == SW)begin
+            // nstate = init;
             case (pstate)
                 init: begin  
                     counter = 0;
@@ -89,14 +86,14 @@ module cache_cu (
 
     always @(posedge clk, negedge rst_b) begin
         if(rst_b == 0) begin
-            cache_we <= 0;
-            mem_we <= 0;
-            mem_in_select <= 0; 
-            counter <= 0;
+            cache_we = 0;
+            mem_we = 0;
+            mem_in_select = 0; 
+            counter = 0;
         end else begin
             pstate = nstate;
-            if(pstate != nstate) counter <= 0;
-            else counter <= counter + 1;
+            if(pstate != nstate) counter = 0;
+            else counter    = counter + 1;
         end
     end
     

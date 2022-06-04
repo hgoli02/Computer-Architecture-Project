@@ -37,15 +37,15 @@ module mips_core(
     wire is_unsigned;
     wire pc_we;
     wire hit;
-
+    wire [5:0] opcode = inst[31:26];
 
 
     data_path DataPath(
         .inst(inst),
         .inst_addr(inst_addr),
-        .mem_addr(mem_addr),
-        .mem_data_in(mem_data_in),
-        .mem_data_out(mem_data_out),
+        .mem_addr(datapath_mem_addr), 
+        .mem_data_in(data_in_datapath),
+        .mem_data_out(data_out_datapath),
         .mem_or_reg(mem_or_reg),
         .alu_src(alu_src),
         .clk(clk),
@@ -67,7 +67,7 @@ module mips_core(
 
     control_unit ControlUnit(
         .halted(halted),
-        .opcode(inst[31:26]),
+        .opcode(opcode),
         .func(inst[5:0]),
         .alu_src(alu_src),
         .reg_dest(reg_dest), 
@@ -110,6 +110,19 @@ module mips_core(
         .dirty_bit(dirty_bit)
     );    
 
+    wire mem_we;
+
+    cache_cu Cache_cu(
+    .dirty(dirty_bit),
+    .cache_we(cache_we),
+    .mem_we(mem_we),
+    .mem_in_select(mem_in_select),
+    .clk(clk),
+    .rst_b(rst_b),
+    .hit(hit),
+    .opcode(opcode),
+    .reg_write_enable(reg_write_enable)
+    );
 // always @(*) begin
 //     $display("we = %b ,mem_addr = %h , mem_in = %h, mem_out = %h",mem_write_en,mem_addr,{mem_data_in[3],mem_data_in[2],mem_data_in[1],mem_data_in[0]},
 //      {mem_data_out[3],mem_data_out[2],mem_data_out[1],mem_data_out[0]});
