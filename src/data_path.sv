@@ -1,7 +1,7 @@
 module data_path (
     inst,inst_addr , reg_dest, reg_write_enable, alu_src, alu_operation, mem_addr, mem_data_in,mem_data_out,
     mem_or_reg,clk,halted,rst_b,branch,jump,jump_register,pc_or_mem,does_shift_amount_need,zero,negative,
-    is_unsigned
+    is_unsigned,pc_we
 
 );
 parameter XLEN = 32;
@@ -21,6 +21,7 @@ assign memory_out = {mem_data_out[3], mem_data_out[2], mem_data_out[1],mem_data_
 
 
 input [3:0] alu_operation;
+input pc_we;
 input reg_dest; // R type and I type Mux from control unit
 input reg_write_enable; // register file write enable from control unit 
 input alu_src; //alu_src
@@ -69,7 +70,7 @@ assign memory_in = rt_data;
 wire[XLEN -1 : 0] pc_value;
 wire[XLEN -1 : 0] pc_input;
 assign inst_addr = pc_value;
-Register pc(.clk(clk),.reset(rst_b),.data_in(pc_input),.data(pc_value),.we(1'b1));
+Register pc(.clk(clk),.reset(rst_b),.data_in(pc_input),.data(pc_value),.we(pc_we));
 
 
 wire[XLEN -1 : 0 ] pc_incremented;
@@ -115,6 +116,7 @@ regfile RegisterFile(
         .rst_b(rst_b),
         .halted(halted)
     );
+
 
     // always @(*) begin
     //     $display("rd_data = %h, rd_num = %h",rd_data, rd_num);

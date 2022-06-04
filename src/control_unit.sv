@@ -1,6 +1,6 @@
 module control_unit (
     opcode, func, halted, alu_src, reg_dest, pc_or_mem, mem_or_reg, branch, jump_register,jump,
-    reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned
+    reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned,pc_we,hit
 );
     output reg halted;
     output reg alu_src;
@@ -14,13 +14,18 @@ module control_unit (
     output reg reg_write_enable;
     output reg does_shift_amount_need;
     output reg mem_write_en;
-    output reg proc;
+    output reg pc_we;
     output [3:0] alu_operation;
     reg should_branch;
+    wire is_mem_inst;
 
     input[5:0] opcode;
     input[5:0] func;
     input negative,zero;
+    input hit;
+
+    assign pc_we = ~is_mem_inst | (is_mem_inst & hit);
+    assign is_mem_inst = (opcode == LW | opcode == SW);
 
     ALU_CONTROLLER aluController(alu_operation, opcode, func);
 
@@ -46,8 +51,7 @@ module control_unit (
         mem_write_en = 0;
         reg_dest = 0;
         should_branch = 0;
-        is_unsigned = 0;
-        
+        is_unsigned = 0;        
         //reset control signals!
         case (opcode)
             RTYPE:
@@ -164,8 +168,6 @@ module control_unit (
             end
             JAL : begin 
                 pc_or_mem = 1;
-                reg_write_enable = 1;
-                jump = 1;
                 //TODO bug , pc + 8 -> R[31]
             end
             LW : begin
@@ -203,17 +205,6 @@ module control_unit (
         end
         // $display("should_branch = %d , branch = %d , zero = %d , negative = %d,opcode = %d",should_branch,branch,zero,negative,opcode);
     end
-    always @(*) begin
-        case (opcode)
-            LW, SW: begin
-                if(hit == 0) 
-                    proc = 1;                   
-                else
-                    proc = 0;
-            end 
-            default: begin
-                proc = 0;
-            end
-        endcase
-    end
+    
+
 endmodule

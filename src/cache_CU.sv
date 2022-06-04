@@ -9,7 +9,7 @@ module cache_cu (
     hit,
     opcode,
     reg_write_enable,
-    mem_write_en;
+    mem_write_en
 );
     integer counter;
     output reg cache_we;
@@ -33,34 +33,35 @@ module cache_cu (
         JAL = 6'b000011, SW = 6'b101011, LW = 6'b100011, LUi = 6'b001111;
 
     localparam[1:0] init = 2'b00, write = 2'b01,
-                    read = 2'10;
-    reg[:0] pstate;
+                    read = 2'b10;
+    reg[1:0] pstate;
     reg[1:0] nstate;
 
-    reg [1:0] 
 
     //Handle FSM states
     always @(*) begin
-        case (pstate)
-            init: begin  
-                if(hit == 1) begin
-                    case (opcode)
-                        LW: reg_write_enable = 1;
-                        SW: cache_we = 1;
-                        default: begin end
-                    endcase
-                end else begin
+        if(opcode == LW || opcode == SW)begin
+            case (pstate)
+                init: begin  
+                    if(hit == 1) begin
+                        case (opcode)
+                            LW: reg_write_enable = 1;
+                            SW: cache_we = 1;
+                            default: begin end
+                        endcase
+                    end else begin
+                        
+                    end
+                end 
+                write: begin
                     
                 end
-            end 
-            write: begin
-                
-            end
-            read: begin
-                
-            end
-            default: 
-        endcase
+                read: begin
+                    
+                end
+                default: begin end
+            endcase
+        end
     end
 
     always @(posedge clk, negedge rst_b) begin

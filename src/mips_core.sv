@@ -35,6 +35,10 @@ module mips_core(
     wire negative;
     wire zero;
     wire is_unsigned;
+    wire pc_we;
+    wire hit;
+
+
 
     data_path DataPath(
         .inst(inst),
@@ -57,7 +61,8 @@ module mips_core(
         .does_shift_amount_need(does_shift_amount_need),
         .zero(zero),
         .negative(negative),
-        .is_unsigned(is_unsigned)
+        .is_unsigned(is_unsigned),
+        .pc_we(pc_we)
     );
 
     control_unit ControlUnit(
@@ -77,9 +82,34 @@ module mips_core(
         .mem_write_en(mem_write_en),
         .zero(zero),
         .negative(negative),
-        .is_unsigned(is_unsigned)
+        .is_unsigned(is_unsigned),
+        .pc_we(pc_we),
+        .hit(hit)
     );
-    
+
+    wire [XLEN - 1:0] datapath_mem_addr;
+    wire [7:0]  data_out_datapath[0:3];
+    wire [7:0]  data_in_datapath[0:3];
+    wire cache_we;
+    wire hit;
+    wire dirty_bit;
+    wire mem_in_select;
+
+    memory_datapath Memory_datapath(
+        .data_out(data_out_datapath),
+        .addr(datapath_mem_addr),
+        .data_in(data_in_datapath),
+        .cache_we(cache_we),
+        .clk(clk),
+        .rst_b(rst_b),
+        .mem_data_in(mem_data_in),
+        .mem_data_out(mem_data_out),
+        .mem_addr(mem_addr),
+        .mem_in_select(mem_in_select),
+        .hit(hit),
+        .dirty_bit(dirty_bit)
+    );    
+
 // always @(*) begin
 //     $display("we = %b ,mem_addr = %h , mem_in = %h, mem_out = %h",mem_write_en,mem_addr,{mem_data_in[3],mem_data_in[2],mem_data_in[1],mem_data_in[0]},
 //      {mem_data_out[3],mem_data_out[2],mem_data_out[1],mem_data_out[0]});
