@@ -168,6 +168,8 @@ module control_unit (
             end
             JAL : begin 
                 pc_or_mem = 1;
+                reg_write_enable = 1;
+                jump = 1;
                 //TODO bug , pc + 8 -> R[31]
             end
             LW : begin

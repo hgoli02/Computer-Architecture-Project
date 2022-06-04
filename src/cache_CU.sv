@@ -37,12 +37,16 @@ module cache_cu (
     reg[1:0] pstate;
     reg[1:0] nstate;
 
+    initial begin
+        $monitor("%b", hit);
+    end
 
     //Handle FSM states
     always @(*) begin
         if(opcode == LW || opcode == SW)begin
             case (pstate)
                 init: begin  
+                    counter = 0;
                     if(hit == 1) begin
                         case (opcode)
                             LW: reg_write_enable = 1;
@@ -50,14 +54,33 @@ module cache_cu (
                             default: begin end
                         endcase
                     end else begin
-                        
+                        if(dirty == 1) begin
+                            nstate = write;
+                        end else
+                            nstate = read;
                     end
                 end 
                 write: begin
-                    
+                    if (counter == 0)begin
+                        mem_we = 1;
+                        mem_in_select = 1;
+                    end else 
+                        mem_we = 0;
+                    if (counter == 4) begin
+                        nstate = read;
+                        counter = 0; 
+                    end
                 end
                 read: begin
-                    
+                    if (counter == 0) begin
+                        mem_in_select = 0;
+                    end
+                    mem_we = 0;//not needed
+                    if (counter == 4) begin
+                        //now mem_data_out is ready enable cache we
+                        cache_we = 1;
+                        nstate = init; //it works beatifully it will set reg_write_enable to 1 in the next cycle if needed
+                    end
                 end
                 default: begin end
             endcase
@@ -72,6 +95,8 @@ module cache_cu (
             counter <= 0;
         end else begin
             pstate = nstate;
+            if(pstate != nstate) counter <= 0;
+            else counter <= counter + 1;
         end
     end
     
