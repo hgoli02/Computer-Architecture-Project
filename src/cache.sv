@@ -20,7 +20,7 @@ module cache (
     output dirty_bit;
 
     input  [7:0] data_in[0:3];
-    input [C_WIDTH - 1: 0] addr;
+    input [31: 0] addr;
     input we;
     input clk;
     input rst_b;
@@ -34,11 +34,14 @@ module cache (
 
     assign cache_miss_addr = {cache_tags[addr[12:2]] ,addr[12:2],2'b00};
     assign hit = (cache_tags[addr[12:2]] == addr [31 : 13]) && (valid_bits[addr[12:2]] == 1) ? 1'b1 : 1'b0;
-    
-    assign data_out[0] = mem[addr[12:2]];
-    assign data_out[1] = mem[addr[12:2] + 1];
-    assign data_out[2] = mem[addr[12:2] + 2];
-    assign data_out[3] = mem[addr[12:2] + 3];
+
+    wire [31:0] ea = addr & 32'hfffffffc;
+    wire [31:0] ei = ea >> 2;
+
+    assign data_out[0] = mem[ea];
+    assign data_out[1] = mem[ea + 1];
+    assign data_out[2] = mem[ea + 2];
+    assign data_out[3] = mem[ea + 3];
 
     assign dirty_bit = dirty_bits[addr[12:2]];
 
@@ -58,18 +61,18 @@ module cache (
             end
         end else begin
             if (we) begin
-                if (addr[31:18] == cache_tags[addr[12:2]]) begin
-                    dirty_bits [addr[12:2]] <= 1'b1;
-                    valid_bits [addr[12:2]] <= 1'b1;
+                if (addr[31:13] == cache_tags[addr[12:2]]) begin
+                    dirty_bits [ei] <= 1'b1;
+                    valid_bits [ei] <= 1'b1;
                 end else begin
-                    dirty_bits [addr[12:2]] <= 1'b0;
-                    valid_bits [addr[12:2]] <= 1'b1;
+                    dirty_bits [ei] <= 1'b0;
+                    valid_bits [ei] <= 1'b1;
                 end
-                cache_tags[addr[12:2]] <= addr[31:18];
-                mem [addr[12:2]] <= data_in[0];
-                mem [addr[12:2] + 1] <= data_in[1];
-                mem [addr[12:2] + 2] <= data_in[2];
-                mem [addr[12:2] + 3] <= data_in[3];
+                cache_tags[addr[12:2]] <= addr[31:13];
+                mem [ea] <= data_in[0];
+                mem [ea + 1] <= data_in[1];
+                mem [ea + 2] <= data_in[2];
+                mem [ea + 3] <= data_in[3];
 
             end
         end
