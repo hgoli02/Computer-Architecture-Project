@@ -117,4 +117,13 @@ regfile RegisterFile(
         .halted(halted)
     );
 
+integer x;
+initial begin
+    x = 0;
+end
+always @(negedge clk) begin
+    $display("\n\n*************************************\nclock = %d\n\n",x);
+    x = x + 1;
+end
+
 endmodule

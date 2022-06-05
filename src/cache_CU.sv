@@ -105,11 +105,14 @@ module cache_cu (
     end
 
     always @(negedge clk) begin
-        if (opcode == LW) 
+        if (opcode == LW) begin
             $display("LW instruction");
-        else if (opcode == SW)
+            $display("Current state = %d next state = %d",pstate,nstate);
+        end
+        else if (opcode == SW)begin
             $display("SW instruction");
-        $display("Current state = %d next state = %d\n*****************",pstate,nstate);
+            $display("Current state = %d next state = %d",pstate,nstate);
+        end
     end
     
 endmodule
