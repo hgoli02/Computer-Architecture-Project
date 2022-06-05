@@ -10,6 +10,7 @@ module memory_datapath (
     mem_in_select,
     mem_addr,
     dirty_bit,
+    cache_in_select,
     hit
 );
     output [7:0] data_out[0:3];
@@ -25,12 +26,16 @@ module memory_datapath (
     input rst_b;
     input mem_in_select;
     input cache_we;
+    input cache_in_select;
 
     wire[31:0] cache_miss_addr;
+    wire [7:0] cache_data_in [0:3];
+
+    assign cache_data_in = (cache_in_select == 1) ? data_in : mem_data_out; 
     
     cache Cache(
         .addr(addr),
-        .data_in(mem_data_out),
+        .data_in(cache_data_in),
         .dirty_bit(dirty_bit),
         .data_out(data_out),
         .cache_miss_addr(cache_miss_addr),

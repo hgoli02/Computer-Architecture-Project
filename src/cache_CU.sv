@@ -7,13 +7,15 @@ module cache_cu (
     rst_b,
     hit,
     opcode,
-    reg_write_enable
+    reg_write_enable,
+    cache_in_select
 );
     integer counter;
     output reg cache_we;
     output reg mem_we;
     output reg mem_in_select;
     output reg reg_write_enable;
+    output reg cache_in_select;
     
     input clk;
     input dirty;
@@ -39,13 +41,17 @@ module cache_cu (
     always @(*) begin
         if(opcode == LW || opcode == SW)begin
             // nstate = init;
+            cache_in_select = 0;
             case (pstate)
                 init: begin  
                     counter = 0;
                     if(hit == 1) begin
                         case (opcode)
                             LW: reg_write_enable = 1;
-                            SW: cache_we = 1;
+                            SW: begin 
+                                cache_we = 1;
+                                cache_in_select = 1;
+                            end
                             default: begin end
                         endcase
                     end else begin

@@ -94,7 +94,9 @@ module mips_core(
     wire hit;
     wire dirty_bit;
     wire mem_in_select;
-
+    wire cache_in_select;
+    wire mem_we;
+    
     memory_datapath Memory_datapath(
         .data_out(data_out_datapath),
         .addr(datapath_mem_addr),
@@ -107,10 +109,9 @@ module mips_core(
         .mem_addr(mem_addr),
         .mem_in_select(mem_in_select),
         .hit(hit),
-        .dirty_bit(dirty_bit)
+        .dirty_bit(dirty_bit),
+        .cache_in_select(cache_in_select)
     );    
-
-    wire mem_we;
 
     cache_cu Cache_cu(
     .dirty(dirty_bit),
@@ -121,7 +122,8 @@ module mips_core(
     .rst_b(rst_b),
     .hit(hit),
     .opcode(opcode),
-    .reg_write_enable(reg_write_enable)
+    .reg_write_enable(reg_write_enable),
+    .cache_in_select(cache_in_select)
     );
 // always @(*) begin
 //     $display("we = %b ,mem_addr = %h , mem_in = %h, mem_out = %h",mem_write_en,mem_addr,{mem_data_in[3],mem_data_in[2],mem_data_in[1],mem_data_in[0]},

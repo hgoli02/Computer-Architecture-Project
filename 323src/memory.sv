@@ -34,8 +34,8 @@ module memory(
             integer i;
             if (has_default) begin
                 $readmemh(default_file, mem);
-                // for (i = start; i <= top; i++)
-                //     $display(i, mem[i]);
+                //  for (i = start; i <= top; i++)
+                //      $display(i, mem[i]);
             end else begin
                 for (i = start; i <= top; i++)
                     mem[i] <= 0;
