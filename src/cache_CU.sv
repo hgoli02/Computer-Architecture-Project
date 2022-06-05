@@ -42,6 +42,9 @@ module cache_cu (
         if(opcode == LW || opcode == SW)begin
             // nstate = init;
             cache_in_select = 0;
+            cache_we = 0;
+            mem_in_select = 0;
+            mem_we = 0;
             case (pstate)
                 init: begin  
                     counter = 0;

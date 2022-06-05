@@ -35,6 +35,10 @@ module cache (
     assign cache_miss_addr = {cache_tags[addr[12:2]] ,addr[12:2],2'b00};
     assign hit = (cache_tags[addr[12:2]] == addr [31 : 13]) && (valid_bits[addr[12:2]] == 1) ? 1'b1 : 1'b0;
 
+    always @(hit) begin
+        $display("cache tag = %h, addr[31:13] = %h  valid bit = %h",cache_tags[addr[12:2]],addr [31 : 13],valid_bits[addr[12:2]]);
+    end
+
     wire [31:0] ea = addr & 32'hfffffffc;
     wire [31:0] ei = ea >> 2;
 
