@@ -73,7 +73,7 @@ module cache (
                 mem [ea + 1] <= data_in[1];
                 mem [ea + 2] <= data_in[2];
                 mem [ea + 3] <= data_in[3];
-
+                $display("writing %d in block = %h tag id = %b",{data_in[0],data_in[1],data_in[2],data_in[3]},addr[12:2],cache_tags[addr[12:2]]);
             end
         end
     end

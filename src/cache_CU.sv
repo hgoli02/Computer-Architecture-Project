@@ -35,8 +35,6 @@ module cache_cu (
     reg[1:0] pstate;
     reg[1:0] nstate;
 
-    initial $monitor("p_state = %h , opcode = %h , counter = %d , hit = %b",pstate,opcode,counter,hit);   
-
     //Handle FSM states
     always @(*) begin
         if(opcode == LW || opcode == SW)begin
@@ -95,6 +93,14 @@ module cache_cu (
             if(pstate != nstate) counter = 0;
             else counter    = counter + 1;
         end
+    end
+
+    always @(negedge clk) begin
+        if (opcode == LW) 
+            $display("LW instruction");
+        else if (opcode == SW)
+            $display("SW instruction");
+        $display("Current state = %d next state = %d\n*****************",pstate,nstate);
     end
     
 endmodule

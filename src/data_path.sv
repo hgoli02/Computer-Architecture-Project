@@ -117,5 +117,4 @@ regfile RegisterFile(
         .halted(halted)
     );
 
-    initial $monitor("pc_value = %h , pc_we = %b",pc_value,pc_we);
 endmodule
