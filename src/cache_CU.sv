@@ -65,17 +65,15 @@ module cache_cu (
                         endcase
                     end else begin
                         if(dirty == 1) begin
+                            mem_in_select = 1;
+                            mem_we = 1;
                             nstate = write;
                         end else
                             nstate = read;
                     end
                 end 
                 write: begin
-                    if (counter == 0)begin
-                        mem_we = 1;
-                        mem_in_select = 1;
-                    end else 
-                        mem_we = 0;
+                    mem_in_select = 1;
                     if (counter == 4) begin
                         nstate = read;
                         counter = 0; 
@@ -124,6 +122,7 @@ module cache_cu (
             $display("SB instruction");
             $display("Current state = %d next state = %d",pstate,nstate);
         end
+        $display("counter = %d",counter);
+        $display("mem_we in cu = %h",mem_we);
     end
-    
 endmodule

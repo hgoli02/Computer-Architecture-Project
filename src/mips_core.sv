@@ -117,16 +117,16 @@ module mips_core(
     );    
 
     cache_cu Cache_cu(
-        .dirty(dirty_bit),
-        .cache_we(cache_we),
-        .mem_we(mem_we),
-        .mem_in_select(mem_in_select),
-        .clk(clk),
-        .rst_b(rst_b),
-        .hit(hit),
-        .opcode(opcode),
-        .reg_write_enable(reg_write_enable),
-        .cache_in_select(cache_in_select)
+    .dirty(dirty_bit),
+    .cache_we(cache_we),
+    .mem_we(mem_write_en),
+    .mem_in_select(mem_in_select),
+    .clk(clk),
+    .rst_b(rst_b),
+    .hit(hit),
+    .opcode(opcode),
+    .reg_write_enable(reg_write_enable),
+    .cache_in_select(cache_in_select)
     );
     
 // always @(*) begin
