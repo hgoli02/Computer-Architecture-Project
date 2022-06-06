@@ -19,7 +19,7 @@ main:
         lw $t6 , 0($t0) #hit to load
         sw $t5 , 0($t1) #miss to save , dirty bit = 1
         lw $t7 , 0($t0) #miss to load , dirty bit = 1
-        lw $t8 , 0($t1) #miss to load , dirty bit = 1
+        lw $t8 , 0($t1) #miss to load , dirty bit = 0
         
 
         #;; Calculate a "checksum" for easy comparison

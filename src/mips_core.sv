@@ -95,7 +95,6 @@ module mips_core(
     wire dirty_bit;
     wire mem_in_select;
     wire cache_in_select;
-    wire mem_we;
     
     memory_datapath Memory_datapath(
         .data_out(data_out_datapath),
@@ -116,7 +115,7 @@ module mips_core(
     cache_cu Cache_cu(
     .dirty(dirty_bit),
     .cache_we(cache_we),
-    .mem_we(mem_we),
+    .mem_we(mem_write_en),
     .mem_in_select(mem_in_select),
     .clk(clk),
     .rst_b(rst_b),
