@@ -42,7 +42,7 @@ module cache (
         $display("cache tag = %h, addr[31:13] = %h  valid bit = %h",cache_tags[addr[12:2]],addr [31 : 13],valid_bits[addr[12:2]]);
     end
 
-    //wire [31:0] ea = addr & 31'hfffffffc;
+    // wire [31:0] ea = addr & 31'hfffffffc;
     wire [12:0] ea = addr[12:0] & 13'h1ffc;
     // wire [31:0] ei = ea >> 2;
 
@@ -74,23 +74,23 @@ module cache (
         end else begin
             if (we) begin
                 if (addr[31:13] == cache_tags[addr[12:2]]) begin
-                        dirty_bits [addr[12:2]] <= 1'b1;
-                    end else begin
-                        dirty_bits [addr[12:2]] <= 1'b0;
-                    end
-                    valid_bits [addr[12:2]] <= 1'1;
-                    cache_tags[addr[12:2]] <= addr[31:13];
+                    dirty_bits [addr[12:2]] <= 1'b1;
+                end else begin
+                    dirty_bits [addr[12:2]] <= 1'b0;
+                end
+                valid_bits [addr[12:2]] <= 1'b1;
+                cache_tags[addr[12:2]] <= addr[31:13];
 
 
                 if (is_byte) begin
-                    if(ea == addr[12:0])  
-                        mem [ea]    <= data_in[0];
+                    if(ea == addr[12:0])
+                        mem [ea]  <= data_in[0];
                     else if (ea + 1 == addr[12:0])
-                        mem[ea + 1] <= data_in[1];
+                        mem[ea + 1] <= data_in[0];
                     else if (ea + 2 == addr[12:0])
-                        mem[ea + 2] <= data_in[2];
-                    else 
-                        mem[ea + 3] <= data_in[3];                        
+                        mem[ea + 2] <= data_in[0];
+                    else if (ea + 3 == addr[12:0])
+                        mem[ea + 3] <= data_in[0];    
                 end else begin
                     mem [ea] <= data_in[0];
                     mem [ea + 1] <= data_in[1];
@@ -100,6 +100,10 @@ module cache (
                 $display("writing %h in block = %h new tag id = %b, curr tag id = %b",{data_in[3],data_in[2],data_in[1],data_in[0]},addr[12:2], addr[31:13],cache_tags[addr[12:2]]);
             end 
         end
+        $display("dataout = %h %h %h %h",data_out[3],data_out[2],data_out[1],data_out[0]);
     end
+    always @(negedge clk)
+        $display("mem[ea] = %h , mem[ea+1] = %h , mem[ea+2] = %h , mem[ea+3] = %h , ea = %h , addr[12:0] = %h",mem[ea],mem[ea+1],mem[ea+2],mem[ea+3],ea,addr[12:0]);
+
 
 endmodule

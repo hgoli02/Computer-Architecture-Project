@@ -48,7 +48,10 @@ module ALU_CONTROLLER(alu_operation, opcode, func);
             6'b000111 : alu_operation = NOP; //BGTZ        
             6'b000001 : alu_operation = NOP; //BGEZ
             6'b101011 : alu_operation = ADD; //SW
-            6'b100011 : alu_operation = ADD; //LW        
+            6'b100011 : alu_operation = ADD; //LW 
+            6'b100000 : alu_operation = ADD; //SB
+            6'b101000 : alu_operation = ADD; //LB
+                   
             default : alu_operation = NOP;
             
         endcase
