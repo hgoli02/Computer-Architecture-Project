@@ -1,6 +1,6 @@
 module control_unit (
     opcode, func, halted, alu_src, reg_dest, pc_or_mem, mem_or_reg, branch, jump_register,jump,
-    reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned,pc_we,hit
+    reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned,pc_we,hit,is_byte
 );
     output reg halted;
     output reg alu_src;
@@ -15,6 +15,7 @@ module control_unit (
     output reg does_shift_amount_need;
     output reg mem_write_en;
     output reg pc_we;
+    output reg is_byte;
     output [3:0] alu_operation;
     reg should_branch;
     wire is_mem_inst;
@@ -25,7 +26,7 @@ module control_unit (
     input hit;
 
     assign pc_we = ~is_mem_inst | (is_mem_inst & hit);
-    assign is_mem_inst = (opcode == LW | opcode == SW);
+    assign is_mem_inst = (opcode == LW | opcode == SW | opcode == LB | opcode == SB);
 
     ALU_CONTROLLER aluController(alu_operation, opcode, func);
 
@@ -36,7 +37,7 @@ module control_unit (
         XOR = 6'b100110 , SUB = 6'b100010, ANDi = 6'b001100 ,XORi = 6'b001110,ORi = 6'b001101,
         SLLV = 6'b000100 , SLL = 6'b000000 , SRL = 6'b000010 , SRLV = 6'b000110, SRA = 6'b000011,
         SLT = 6'b101010 , SLTi = 6'b001010 , ADDU = 6'b100001, SUBU = 6'b100011 , JR = 6'b001000,
-        JAL = 6'b000011, SW = 6'b101011, LW = 6'b100011, LUi = 6'b001111;
+        JAL = 6'b000011, SW = 6'b101011, LW = 6'b100011, LUi = 6'b001111, LB = 6'b100000, SB = 6'b101000;
     always @(*) begin
         halted = 0;
         pc_or_mem = 0;
@@ -50,7 +51,8 @@ module control_unit (
         mem_write_en = 0;
         reg_dest = 0;
         should_branch = 0;
-        is_unsigned = 0;        
+        is_unsigned = 0;
+        is_byte = 0;        
         //reset control signals!
         case (opcode)
             RTYPE:
@@ -176,11 +178,22 @@ module control_unit (
                 alu_src = 1;
                 //reg_write_enable = 1;
             end
+            LB: begin
+                mem_or_reg = 1;
+                alu_src = 1;
+                is_byte = 1;
+            end 
 
             SW : begin
                 alu_src = 1;
                 //mem_write_en = 1;
             end
+
+            SB : begin
+                alu_src = 1;
+                is_byte = 1;
+            end 
+
             LUi : begin
                 reg_write_enable = 1;
                 alu_src = 1;

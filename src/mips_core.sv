@@ -84,7 +84,8 @@ module mips_core(
         .negative(negative),
         .is_unsigned(is_unsigned),
         .pc_we(pc_we),
-        .hit(hit)
+        .hit(hit),
+        .is_byte(is_byte)
     );
 
     wire [XLEN - 1:0] datapath_mem_addr;
@@ -96,6 +97,7 @@ module mips_core(
     wire mem_in_select;
     wire cache_in_select;
     wire mem_we;
+    wire is_byte;
     
     memory_datapath Memory_datapath(
         .data_out(data_out_datapath),
@@ -110,21 +112,23 @@ module mips_core(
         .mem_in_select(mem_in_select),
         .hit(hit),
         .dirty_bit(dirty_bit),
+        .is_byte(is_byte),
         .cache_in_select(cache_in_select)
     );    
 
     cache_cu Cache_cu(
-    .dirty(dirty_bit),
-    .cache_we(cache_we),
-    .mem_we(mem_we),
-    .mem_in_select(mem_in_select),
-    .clk(clk),
-    .rst_b(rst_b),
-    .hit(hit),
-    .opcode(opcode),
-    .reg_write_enable(reg_write_enable),
-    .cache_in_select(cache_in_select)
+        .dirty(dirty_bit),
+        .cache_we(cache_we),
+        .mem_we(mem_we),
+        .mem_in_select(mem_in_select),
+        .clk(clk),
+        .rst_b(rst_b),
+        .hit(hit),
+        .opcode(opcode),
+        .reg_write_enable(reg_write_enable),
+        .cache_in_select(cache_in_select)
     );
+    
 // always @(*) begin
 //     $display("we = %b ,mem_addr = %h , mem_in = %h, mem_out = %h",mem_write_en,mem_addr,{mem_data_in[3],mem_data_in[2],mem_data_in[1],mem_data_in[0]},
 //      {mem_data_out[3],mem_data_out[2],mem_data_out[1],mem_data_out[0]});

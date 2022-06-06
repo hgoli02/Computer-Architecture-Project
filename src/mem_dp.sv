@@ -11,6 +11,7 @@ module memory_datapath (
     mem_addr,
     dirty_bit,
     cache_in_select,
+    is_byte,
     hit
 );
     output [7:0] data_out[0:3];
@@ -27,6 +28,7 @@ module memory_datapath (
     input mem_in_select;
     input cache_we;
     input cache_in_select;
+    input is_byte;
 
     wire[31:0] cache_miss_addr;
     wire [7:0] cache_data_in [0:3];
@@ -42,6 +44,7 @@ module memory_datapath (
         .we(cache_we),
         .hit(hit),
         .clk(clk), 
+        .is_byte(is_byte),
         .rst_b(rst_b)
     );
 
