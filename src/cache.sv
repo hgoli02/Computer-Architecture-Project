@@ -51,10 +51,10 @@ module cache (
     // assign data_out[2] = mem[ea + 2];
     // assign data_out[3] = mem[ea + 3];
 
-    assign data_out[0] = is_byte ? mem[addr[12:0]] : mem[ea];
-    assign data_out[1] = is_byte ? {8{mem[addr[12:0]][7]}} : mem[ea + 1];
-    assign data_out[2] = is_byte ? {8{mem[addr[12:0]][7]}} : mem[ea + 2];
-    assign data_out[3] = is_byte ? {8{mem[addr[12:0]][7]}} : mem[ea + 3];
+    assign data_out[0] = is_byte ? mem[addr[12:0]] : mem[ea + 3];
+    assign data_out[1] = is_byte ? {8{mem[addr[12:0]][7]}} : mem[ea + 2];
+    assign data_out[2] = is_byte ? {8{mem[addr[12:0]][7]}} : mem[ea + 1];
+    assign data_out[3] = is_byte ? {8{mem[addr[12:0]][7]}} : mem[ea + 0];
 
 
 
@@ -92,10 +92,10 @@ module cache (
                     else if (ea + 3 == addr[12:0])
                         mem[ea + 3] <= data_in[0];    
                 end else begin
-                    mem [ea] <= data_in[0];
-                    mem [ea + 1] <= data_in[1];
-                    mem [ea + 2] <= data_in[2];
-                    mem [ea + 3] <= data_in[3];
+                    mem [ea + 3] <= data_in[0];
+                    mem [ea + 2] <= data_in[1];
+                    mem [ea + 1] <= data_in[2];
+                    mem [ea + 0] <= data_in[3];
                 end
                 $display("writing %h in block = %h new tag id = %b, curr tag id = %b",{data_in[3],data_in[2],data_in[1],data_in[0]},addr[12:2], addr[31:13],cache_tags[addr[12:2]]);
             end 
