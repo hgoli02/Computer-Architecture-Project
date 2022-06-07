@@ -78,6 +78,8 @@ module cache_cu (
                     end
                 end 
                 write: begin
+                    //if(counter == 1)
+                    //    mem_we = 1;
                     mem_in_select = 1;
                     if (counter == 4) begin
                         nstate = read;
