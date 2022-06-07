@@ -84,8 +84,7 @@ module mips_core(
         .negative(negative),
         .is_unsigned(is_unsigned),
         .pc_we(pc_we),
-        .hit(hit),
-        .is_byte(is_byte)
+        .hit(hit)
     );
 
     wire [XLEN - 1:0] datapath_mem_addr;
@@ -126,7 +125,8 @@ module mips_core(
     .hit(hit),
     .opcode(opcode),
     .reg_write_enable(reg_write_enable),
-    .cache_in_select(cache_in_select)
+    .cache_in_select(cache_in_select),
+    .is_byte(is_byte)
     );
     
 // always @(*) begin

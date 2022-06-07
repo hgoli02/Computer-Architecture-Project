@@ -1,6 +1,6 @@
 module control_unit (
     opcode, func, halted, alu_src, reg_dest, pc_or_mem, mem_or_reg, branch, jump_register,jump,
-    reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned,pc_we,hit,is_byte
+    reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned,pc_we,hit//,is_byte
 );
     output reg halted;
     output reg alu_src;
@@ -15,7 +15,7 @@ module control_unit (
     output reg does_shift_amount_need;
     output reg mem_write_en;
     output reg pc_we;
-    output reg is_byte;
+    // output reg is_byte;
     output [3:0] alu_operation;
     reg should_branch;
     wire is_mem_inst;
@@ -52,7 +52,7 @@ module control_unit (
         reg_dest = 0;
         should_branch = 0;
         is_unsigned = 0;
-        is_byte = 0;        
+        // is_byte = 0;        
         //reset control signals!
         case (opcode)
             RTYPE:
@@ -181,7 +181,7 @@ module control_unit (
             LB: begin
                 mem_or_reg = 1;
                 alu_src = 1;
-                is_byte = 1;
+                // is_byte = 1;
             end 
 
             SW : begin
@@ -191,7 +191,7 @@ module control_unit (
 
             SB : begin
                 alu_src = 1;
-                is_byte = 1;
+                // is_byte = 1;
             end 
 
             LUi : begin

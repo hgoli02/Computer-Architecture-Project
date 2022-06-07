@@ -8,7 +8,8 @@ module cache_cu (
     hit,
     opcode,
     reg_write_enable,
-    cache_in_select
+    cache_in_select,
+    is_byte
 );
     integer counter;
     output reg cache_we;
@@ -16,6 +17,7 @@ module cache_cu (
     output reg mem_in_select;
     output reg reg_write_enable;
     output reg cache_in_select;
+    output reg is_byte;
     
     input clk;
     input dirty;
@@ -42,6 +44,7 @@ module cache_cu (
             cache_we = 0;
             mem_in_select = 0;
             mem_we = 0;
+            is_byte = 0;
             case (pstate)
                 init: begin  
                     counter = 0;
@@ -52,10 +55,12 @@ module cache_cu (
                             end
                             LB: begin
                                 reg_write_enable = 1;
+                                is_byte = 1;
                             end
                             SB: begin
                                 cache_we = 1;
                                 cache_in_select = 1;
+                                is_byte = 1;
                             end 
                             SW: begin 
                                 cache_we = 1;
@@ -123,6 +128,6 @@ module cache_cu (
             $display("Current state = %d next state = %d",pstate,nstate);
         end
         $display("counter = %d",counter);
-        $display("mem_we in cu = %h",mem_we);
+      
     end
 endmodule

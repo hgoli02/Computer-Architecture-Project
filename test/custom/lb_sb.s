@@ -1,30 +1,32 @@
-        # Basic LB/SB test
+        # Basic LW/SW test
 	.text
 main:
         #;;  Set a base address
         lui $t0, 0x1001
-        ori $t0 ,0x0101
+        ori $t0 ,0x0100
         lui $t1, 0x1002
-        ori $t1 ,0x0102
+        ori $t1 ,0x0100
 
 
-        addiu  $t2, $zero, 255
-        add    $t3, $t2, $t2
-        add    $t4, $t3, $t3
-        add    $t5, $t3, $t4
+        addi  $t2, $zero, 0x14
+        addi  $t3, $zero, 0xa3 # test -16
+        addi  $t4, $zero, 0x62
+        addi  $t5, $zero, 0x85
         
         #;; Place a test pattern in memory
-        sb $t2 , 0($t0) #miss to save
-        sb $t3 , 0($t0) #hit to save
+        
+        sb $t2 , 0($t0) #hit to save
+        sb $t3 , 1($t0) #miss to save
+        sb $t4 , 2($t0) #miss to save
+        sb $t5 , 3($t0) #miss to save
+                
         lb $t6 , 0($t0) #hit to load
-        sb $t5 , 0($t1) #miss to save , dirty bit = 1
-        lb $t7 , 0($t0) #miss to load , dirty bit = 1
-        lb $t8 , 0($t1) #miss to load , dirty bit = 0
-        
+        lb $t7 , 1($t0) #hit to load
+        lb $t8 , 2($t0) #hit to load
+        lb $t9 , 3($t0) #hit to load
 
-        #;; Calculate a "checksum" for easy comparison
-        add    $s0, $t7, $t8
-        
+        lw $s0 , 0($t0) #hit to load
+
         #;;  Quit out 
         addiu $v0, $zero, 0xa
         syscall
