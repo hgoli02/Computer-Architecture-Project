@@ -78,19 +78,15 @@ module cache_cu (
                     end
                 end 
                 write: begin
-                    //if(counter == 1)
-                    //    mem_we = 1;
-                    mem_in_select = 1;
-                    if (counter == 4) begin
+                    if (counter <= 4)
+                        mem_in_select = 1;
+                    if (counter == 5) begin
+                        mem_in_select = 0;  
                         nstate = read;
                         counter = 0; 
                     end
                 end
                 read: begin
-                    if (counter == 0) begin
-                        mem_in_select = 0;
-                    end
-                    mem_we = 0;//not needed
                     if (counter == 4) begin
                         //now mem_data_out is ready enable cache we
                         cache_we = 1;
