@@ -2,23 +2,23 @@ module Register #(
     parameter XLEN = 32
 ) (
     clk,
-    reset,
+    rst_b,
     data_in,
-    data,
+    data_out,
     we
 );
-input[XLEN -1 : 0] data_in;
+input[XLEN - 1 : 0] data_in;
 input clk;
-input reset;
+input rst_b;
 input we;
-output reg [XLEN -1 : 0] data;
+output reg [XLEN -1 : 0] data_out;
 
 always @(posedge clk) begin
-    if (reset == 0)
-        data <= {XLEN{1'b0}};
+    if (rst_b == 0)
+        data_out <= {XLEN{1'b0}};
     else
         if(we)
-            data <= data_in;    
+            data_out <= data_in;    
 end
     
 endmodule
