@@ -205,7 +205,7 @@ module control_unit (
         endcase
 
     end
-    always @(should_branch ,zero , negative)begin
+    always @(should_branch ,zero , negative)begin //TODO: Big Bug (This part should be in datapath and only the should branch signal be activated)
         branch = 0;
         if (should_branch)begin
             case(opcode)

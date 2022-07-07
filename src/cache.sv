@@ -102,13 +102,13 @@ module cache (
         end
         $display("dataout = %h %h %h %h",data_out[3],data_out[2],data_out[1],data_out[0]);
     end
-    always @(negedge clk) begin
-        $display("mem[ea] = %h , mem[ea+1] = %h , mem[ea+2] = %h , mem[ea+3] = %h , ea = %h , addr[12:0] = %h",mem[ea],mem[ea+1],mem[ea+2],mem[ea+3],ea,addr[12:0]);
-        $display("**addr = %h**",addr);
-    end
+    // always @(negedge clk) begin
+    //     $display("mem[ea] = %h , mem[ea+1] = %h , mem[ea+2] = %h , mem[ea+3] = %h , ea = %h , addr[12:0] = %h",mem[ea],mem[ea+1],mem[ea+2],mem[ea+3],ea,addr[12:0]);
+    //     $display("**addr = %h**",addr);
+    // end
 
-    initial begin
-        $monitor("mem[0010] = %h",{mem[13'h0010],mem[13'h0011],mem[13'h0012],mem[13'h0013]});
-    end
+    // initial begin
+    //     $monitor("mem[0010] = %h",{mem[13'h0010],mem[13'h0011],mem[13'h0012],mem[13'h0013]});
+    // end
 
 endmodule

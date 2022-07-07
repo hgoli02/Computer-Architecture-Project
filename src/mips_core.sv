@@ -87,47 +87,65 @@ module mips_core(
         .hit(hit)
     );
 
+    wire [7:0] data_out_datapath[0:3];
+    wire [7:0] data_in_datapath[0:3];
     wire [XLEN - 1:0] datapath_mem_addr;
-    wire [7:0]  data_out_datapath[0:3];
-    wire [7:0]  data_in_datapath[0:3];
-    wire cache_we;
-    wire hit;
-    wire dirty_bit;
-    wire mem_in_select;
-    wire cache_in_select;
-    wire mem_we;
-    wire is_byte;
     
-    memory_datapath Memory_datapath(
+    memory_cache mem(
+        .data_in(data_in_datapath),
         .data_out(data_out_datapath),
         .addr(datapath_mem_addr),
-        .data_in(data_in_datapath),
-        .cache_we(cache_we),
-        .clk(clk),
-        .rst_b(rst_b),
-        .mem_data_in(mem_data_in),
-        .mem_data_out(mem_data_out),
-        .mem_addr(mem_addr),
-        .mem_in_select(mem_in_select),
         .hit(hit),
-        .dirty_bit(dirty_bit),
-        .is_byte(is_byte),
-        .cache_in_select(cache_in_select)
-    );    
-
-    cache_cu Cache_cu(
-    .dirty(dirty_bit),
-    .cache_we(cache_we),
-    .mem_we(mem_write_en),
-    .mem_in_select(mem_in_select),
-    .clk(clk),
-    .rst_b(rst_b),
-    .hit(hit),
-    .opcode(opcode),
-    .reg_write_enable(reg_write_enable),
-    .cache_in_select(cache_in_select),
-    .is_byte(is_byte)
+        .mem_we(mem_write_en),
+        .opcode(opcode),
+        .mips_machine_data_in(mem_data_in),
+        .mips_machine_data_out(mem_data_out),
+        .mips_machine_addr(mem_addr),
+        .clk(clk),
+        .reg_write_enable(reg_write_enable),
+        .rst_b(rst_b)
     );
+
+    // wire [XLEN - 1:0] datapath_mem_addr;
+  
+    // wire cache_we;
+    // wire hit;
+    // wire dirty_bit;
+    // wire mem_in_select;
+    // wire cache_in_select;
+    // wire mem_we;
+    // wire is_byte;
+    
+    // memory_datapath Memory_datapath(
+    //     .data_out(data_out_datapath),
+    //     .addr(datapath_mem_addr),
+    //     .data_in(data_in_datapath),
+    //     .cache_we(cache_we),
+    //     .clk(clk),
+    //     .rst_b(rst_b),
+    //     .mem_data_in(mem_data_in),
+    //     .mem_data_out(mem_data_out),
+    //     .mem_addr(mem_addr),
+    //     .mem_in_select(mem_in_select),
+    //     .hit(hit),
+    //     .dirty_bit(dirty_bit),
+    //     .is_byte(is_byte),
+    //     .cache_in_select(cache_in_select)
+    // );    
+
+    // cache_cu Cache_cu(
+    // .dirty(dirty_bit),
+    // .cache_we(cache_we),
+    // .mem_we(mem_write_en),
+    // .mem_in_select(mem_in_select),
+    // .clk(clk),
+    // .rst_b(rst_b),
+    // .hit(hit),
+    // .opcode(opcode),
+    // .reg_write_enable(reg_write_enable),
+    // .cache_in_select(cache_in_select),
+    // .is_byte(is_byte)
+    // );
     
 // always @(*) begin
 //     $display("we = %b ,mem_addr = %h , mem_in = %h, mem_out = %h",mem_write_en,mem_addr,{mem_data_in[3],mem_data_in[2],mem_data_in[1],mem_data_in[0]},
