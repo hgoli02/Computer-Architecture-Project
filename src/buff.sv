@@ -8,13 +8,13 @@ module buff_IF_ID(pc_incremented_IF,pc_incremented_ID, inst_IF,inst_ID, clk, rst
     Register instruction_reg (.clk(clk), .rst_b(rst_b), .data_in(inst_IF), .data_out(inst_ID), .we(~stall));
 endmodule
 
-module buff_IF_EX(
+module buff_ID_EX(
+    input should_branch_ID,
     input reg_dest_ID,
     input reg_write_enable_ID,
     input alu_src_ID,
     input mem_or_reg_ID,
     input pc_or_mem_ID,
-    input branch_ID,
     input jump_ID,
     input jump_register_ID,
     input does_shift_amount_need_ID,
@@ -33,12 +33,12 @@ module buff_IF_EX(
 
     input clk, rst_b, flush, stall,
 
+    output should_branch_EX,
     output reg_dest_EX,
     output reg_write_enable_EX,
     output alu_src_EX,
     output mem_or_reg_EX,
     output pc_or_mem_EX,
-    output branch_EX,
     output jump_EX,
     output jump_register_EX,
     output does_shift_amount_need_EX,
@@ -55,12 +55,13 @@ module buff_IF_EX(
     output [4:0] rd_num_EX,
     output [5:0] opcode_EX);
 
+
+    Register #(1) should_branch_reg(.clk(clk),.rst_b(rst_b),.data_in(should_branch_ID),.data_out(should_branch_EX),.we(~stall));
     Register #(1) reg_dest_reg(.clk(clk),.rst_b(rst_b),.data_in(reg_dest_ID),.data_out(reg_dest_EX),.we(~stall));
     Register #(1) reg_write_enable_reg(.clk(clk),.rst_b(rst_b),.data_in(reg_write_enable_ID),.data_out(reg_write_enable_EX),.we(~stall));
     Register #(1) alu_src_reg(.clk(clk),.rst_b(rst_b),.data_in(alu_src_ID),.data_out(alu_src_EX),.we(~stall));
     Register #(1) mem_or_reg_reg(.clk(clk),.rst_b(rst_b),.data_in(mem_or_reg_ID),.data_out(mem_or_reg_EX),.we(~stall));
     Register #(1) pc_or_mem_reg(.clk(clk),.rst_b(rst_b),.data_in(pc_or_mem_ID),.data_out(pc_or_mem_EX),.we(~stall));
-    Register #(1) branch_reg(.clk(clk),.rst_b(rst_b),.data_in(branch_ID),.data_out(branch_EX),.we(~stall));
     Register #(1) jump_reg(.clk(clk),.rst_b(rst_b),.data_in(jump_ID),.data_out(jump_EX),.we(~stall));
     Register #(1) jump_register_reg(.clk(clk),.rst_b(rst_b),.data_in(jump_register_ID),.data_out(jump_register_EX),.we(~stall));
     Register #(1) does_shift_amount_need_reg(.clk(clk),.rst_b(rst_b),.data_in(does_shift_amount_need_ID),.data_out(does_shift_amount_need_EX),.we(~stall));
@@ -88,7 +89,7 @@ module buff_EX_MEM(
     input reg_write_enable_EX,
     input mem_or_reg_EX,
     input pc_or_mem_EX,
-    input branch_EX,
+    input should_branch_EX,
     input jump_EX,
     input jump_register_EX,
     input is_unsigned_EX,
@@ -110,7 +111,7 @@ module buff_EX_MEM(
     output reg_write_enable_MEM,
     output mem_or_reg_MEM,
     output pc_or_mem_MEM,
-    output branch_MEM,
+    output should_branch_MEM,
     output jump_MEM,
     output jump_register_MEM,
     output is_unsigned_MEM,
@@ -127,16 +128,17 @@ module buff_EX_MEM(
     output [5:0]  opcode_MEM);
 
 
+    Register #(1) should_branch_reg(.clk(clk),.rst_b(rst_b),.data_in(should_branch_EX),.data_out(should_branch_MEM),.we(~stall));
     Register #(1) reg_dest_reg(.clk(clk),.rst_b(rst_b),.data_in(reg_dest_EX),.data_out(reg_dest_MEM),.we(~stall));
     Register #(1) reg_write_enable_reg(.clk(clk),.rst_b(rst_b),.data_in(reg_write_enable_EX),.data_out(reg_write_enable_MEM),.we(~stall));
     Register #(1) mem_or_reg_reg(.clk(clk),.rst_b(rst_b),.data_in(mem_or_reg_EX),.data_out(mem_or_reg_MEM),.we(~stall));
     Register #(1) pc_or_mem_reg(.clk(clk),.rst_b(rst_b),.data_in(pc_or_mem_EX),.data_out(pc_or_mem_MEM),.we(~stall));
-    Register #(1) branch_reg(.clk(clk),.rst_b(rst_b),.data_in(branch_EX),.data_out(branch_MEM),.we(~stall));
     Register #(1) jump_reg(.clk(clk),.rst_b(rst_b),.data_in(jump_EX),.data_out(jump_MEM),.we(~stall));
     Register #(1) jump_register_reg(.clk(clk),.rst_b(rst_b),.data_in(jump_register_EX),.data_out(jump_register_MEM),.we(~stall));
     Register #(1) is_unsigned_reg(.clk(clk),.rst_b(rst_b),.data_in(is_unsigned_EX),.data_out(is_unsigned_MEM),.we(~stall));
     Register #(1) zero_reg(.clk(clk),.rst_b(rst_b),.data_in(zero_EX),.data_out(zero_MEM),.we(~stall));
     Register #(1) negative_reg(.clk(clk),.rst_b(rst_b),.data_in(negative_EX),.data_out(negative_MEM),.we(~stall));
+    
 
 
     
