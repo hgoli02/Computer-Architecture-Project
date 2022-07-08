@@ -39,8 +39,9 @@ module mips_core(
     wire hit;
     wire stall = 0;
     wire flush = 0;
-    wire [5:0] opcode = inst[31:26];
     wire reg_write_enable_cache;
+    wire [31:0] inst_ID;
+    wire [31:0] inst_MEM;
 
 
     data_path DataPath(
@@ -68,13 +69,14 @@ module mips_core(
         .is_unsigned(is_unsigned),
         .pc_we(pc_we),
         .flush(flush),
-        .stall(stall)
+        .stall(stall),
+        .inst_ID(inst_ID),
+        .inst_MEM(inst_MEM)
     );
 
     control_unit ControlUnit(
         .halted(halted),
-        .opcode(opcode),
-        .func(inst[5:0]),
+        .inst(inst_ID),
         .alu_src(alu_src),
         .reg_dest(reg_dest), 
         .pc_or_mem(pc_or_mem),
@@ -103,7 +105,7 @@ module mips_core(
         .addr(datapath_mem_addr),
         .hit(hit),
         .mem_we(mem_write_en),
-        .opcode(opcode),
+        .opcode(inst_MEM[31:26]),
         .mips_machine_data_in(mem_data_in),
         .mips_machine_data_out(mem_data_out),
         .mips_machine_addr(mem_addr),
