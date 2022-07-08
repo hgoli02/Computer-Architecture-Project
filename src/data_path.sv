@@ -1,8 +1,15 @@
 module data_path (
     inst,inst_addr , reg_dest, reg_write_enable, alu_src, alu_operation, mem_addr, mem_data_in,mem_data_out,
     mem_or_reg,clk,halted,rst_b,branch,jump,jump_register,pc_or_mem,does_shift_amount_need,zero,negative,
-    is_unsigned,pc_we,flush,stall,reg_write_enable_cache,inst_ID, inst_MEM, inst_EX
-);
+    is_unsigned,pc_we,flush,stall,reg_write_enable_cache,inst_ID, inst_MEM, inst_EX, should_branch
+ localparam [5:0] RTYPE = 6'b000000, ADDIU = 6'b001001, ADDi = 6'b001000,
+        SYSCALL = 6'b001100, ADD = 6'b100000 , BEQ = 6'b000100,BGTZ = 6'b000111,
+        BNE = 6'b000101 , JUMP = 6'b000010,BLEZ = 6'b000110,BGEZ = 6'b000001,
+        AND = 6'b100100 , OR = 6'b100101, DIV = 6'b011010, MULT = 6'b011000, NOR = 6'b100111,
+        XOR = 6'b100110 , SUB = 6'b100010, ANDi = 6'b001100 ,XORi = 6'b001110,ORi = 6'b001101,
+        SLLV = 6'b000100 , SLL = 6'b000000 , SRL = 6'b000010 , SRLV = 6'b000110, SRA = 6'b000011,
+        SLT = 6'b101010 , SLTi = 6'b001010 , ADDU = 6'b100001, SUBU = 6'b100011 , JR = 6'b001000,
+        JAL = 6'b000011, SW = 6'b101011, LW = 6'b100011, LUi = 6'b001111, LB = 6'b100000, SB = 6'b101000;
 parameter XLEN = 32;
 input clk, halted, rst_b;
 input wire [XLEN - 1:0] inst;
@@ -32,7 +39,7 @@ input jump;
 input jump_register;
 input does_shift_amount_need;
 input is_unsigned;
-
+input should_branch;
 output zero;
 output negative;
 output [31:0] inst_ID;
@@ -71,6 +78,7 @@ wire jump_ID = jump;
 wire jump_register_ID = jump_register;
 wire does_shift_amount_need_ID = does_shift_amount_need;
 wire is_unsigned_ID = is_unsigned;
+wire should_branch_ID = should_branch;
 wire [31:0] inst_ID;
 wire [31:0] pc_jump_address_ID;
 wire [31:0] pc_incremented_ID;
@@ -109,13 +117,13 @@ regfile RegisterFile(
         .rst_b(rst_b),
         .halted(halted)
 );
-buff_IF_EX buff_ifex(
+buff_ID_EX buff_idex(
+    .should_branch_ID(should_branch_ID),
     .reg_dest_ID(reg_dest_ID),
     .reg_write_enable_ID(reg_write_enable_ID),
     .alu_src_ID(alu_src_ID),
     .mem_or_reg_ID(mem_or_reg_ID),
     .pc_or_mem_ID(pc_or_mem_ID),
-    .branch_ID(branch_ID),
     .jump_ID(jump_ID),
     .jump_register_ID(jump_register_ID),
     .does_shift_amount_need_ID(does_shift_amount_need_ID),
@@ -131,12 +139,12 @@ buff_IF_EX buff_ifex(
     .alu_operation_ID(alu_operation_ID),
     .rd_num_ID(rd_num_ID),
     .opcode_ID(opcode_ID),
+    .should_branch_EX(should_branch_EX),
     .reg_dest_EX(reg_dest_EX),
     .reg_write_enable_EX(reg_write_enable_EX),
     .alu_src_EX(alu_src_EX),
     .mem_or_reg_EX(mem_or_reg_EX),
     .pc_or_mem_EX(pc_or_mem_EX),
-    .branch_EX(branch_EX),
     .jump_EX(jump_EX),
     .jump_register_EX(jump_register_EX),
     .does_shift_amount_need_EX(does_shift_amount_need_EX),
@@ -165,9 +173,9 @@ wire reg_write_enable_EX;
 wire alu_src_EX;
 wire mem_or_reg_EX;
 wire pc_or_mem_EX;
-wire branch_EX;
 wire jump_EX;
 wire jump_register_EX;
+wire should_branch_EX;
 wire does_shift_amount_need_EX;
 wire is_unsigned_EX;
 wire [31:0] pc_jump_address_EX;
@@ -192,11 +200,11 @@ ALU alu(.input1(alu_first_source), .input2(alu_second_source), .out(alu_result_E
 Adder pc_branch(pc_incremented_EX,shifted_first16bit_extended_inst_EX,pc_branch_value_EX);
 
 buff_EX_MEM buff_exmem(
+    .should_branch_EX(should_branch_EX),
     .reg_dest_EX(reg_dest_EX),
     .reg_write_enable_EX(reg_write_enable_EX),
     .mem_or_reg_EX(mem_or_reg_EX),
     .pc_or_mem_EX(pc_or_mem_EX),
-    .branch_EX(branch_EX),
     .jump_EX(jump_EX),
     .jump_register_EX(jump_register_EX),
     .is_unsigned_EX(is_unsigned_EX),
@@ -219,7 +227,6 @@ buff_EX_MEM buff_exmem(
     .reg_write_enable_MEM(reg_write_enable_MEM),
     .mem_or_reg_MEM(mem_or_reg_MEM),
     .pc_or_mem_MEM(pc_or_mem_MEM),
-    .branch_MEM(branch_MEM),
     .jump_MEM(jump_MEM),
     .jump_register_MEM(jump_register_MEM),
     .is_unsigned_MEM(is_unsigned_MEM),
@@ -233,7 +240,8 @@ buff_EX_MEM buff_exmem(
     .rt_data_MEM(rt_data_MEM),
     .alu_result_MEM(alu_result_MEM),
     .rd_num_MEM(rd_num_MEM),
-    .opcode_MEM(opcode_MEM)
+    .opcode_MEM(opcode_MEM),
+    .should_branch_MEM(should_branch_MEM)
 );
 
 
@@ -242,8 +250,8 @@ wire reg_dest_MEM;
 wire reg_write_enable_MEM;
 wire mem_or_reg_MEM;
 wire pc_or_mem_MEM;
-wire branch_MEM;
 wire jump_MEM;
+wire should_branch_MEM;
 wire jump_register_MEM;
 wire is_unsigned_MEM;
 wire zero_MEM;
@@ -268,6 +276,21 @@ Mux mux_if_branch(.select(branch_MEM),.in0(pc_incremented_IF),.in1(pc_branch_val
 Mux mux_if_jump(.select(jump_MEM),.in0(pc_value_after_branch),.in1(pc_jump_address_MEM),.out(pc_after_j_or_branch));
 Mux mux_jump_register(.select(jump_register_MEM),.in0(pc_after_j_or_branch),.in1(rs_data_MEM),.out(pc_input));
 
+reg branch_MEM;
+always @(should_branch_MEM ,zero_MEM , negative_MEM)begin //TODO: Big Bug (This part should be in datapath and only the should branch signal be activated)
+        branch_MEM = 0;
+        if (should_branch_MEM)begin
+            case(opcode_MEM)
+                BEQ: if(zero_MEM) branch_MEM = 1;
+                BNE: if(~zero_MEM) branch_MEM = 1;
+                BLEZ: if(zero_MEM || negative_MEM) branch_MEM = 1;
+                BGTZ: if(~negative_MEM && ~zero_MEM) branch_MEM = 1;
+                BGEZ: if(~negative_MEM) branch_MEM = 1;
+                default:begin end
+            endcase
+        end
+        // $display("should_branch = %d , branch = %d , zero = %d , negative = %d,opcode = %d",should_branch,branch,zero,negative,opcode);
+    end
 
 buff_MEM_WB buff_memwb(
     .memory_out_MEM(memory_out_MEM),
@@ -324,6 +347,9 @@ always @(negedge clk) begin
     $display("reg_write_enable WB = %d, mem_or_reg = %d, pc_or_mem = %d, rd_data = %d, rd_num = %d", reg_write_enable_WB, mem_or_reg_WB, pc_or_mem_WB,rd_data,rd_num_WB);
     $display("rd_num_ID/EX/MEM/WB = %d%d%d%d",rd_num_ID,rd_num_EX,rd_num_MEM,rd_num_WB);
     $display("pc_or_mem = %d, reg_dst = %d",pc_or_mem, reg_dest);
+    $display("immediate ID,EX =  %d,%d" ,immediate_data_ID,immediate_data_EX);
+    $display("does_shift_amount_need = %d alu_src =  %d alu_src_ID = %d alu_src_EX = %d",does_shift_amount_need, alu_src,alu_src_ID, alu_src_EX);
+    $display("alu1 = %d alusec =  %d ",alu_first_source,alu_second_source);
 end
 
 

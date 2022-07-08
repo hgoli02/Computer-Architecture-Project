@@ -1,6 +1,6 @@
 module control_unit (
     inst_ID, inst_MEM, inst_EX, halted, alu_src, reg_dest, pc_or_mem, mem_or_reg, branch, jump_register,jump,
-    reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned,pc_we,hit//,is_byte
+    reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned,pc_we,hit,should_branch//,is_byte
 );
     output reg halted;
     output reg alu_src;
@@ -17,7 +17,7 @@ module control_unit (
     output reg pc_we;
     // output reg is_byte;
     output [3:0] alu_operation;
-    reg should_branch;
+    output reg should_branch;
     wire is_mem_inst;
 
     input [31:0] inst_ID;
@@ -213,20 +213,7 @@ module control_unit (
         endcase
 
     end
-    always @(should_branch ,zero , negative)begin //TODO: Big Bug (This part should be in datapath and only the should branch signal be activated)
-        branch = 0;
-        if (should_branch)begin
-            case(opcode_MEM)
-                BEQ: if(zero) branch = 1;
-                BNE: if(~zero) branch = 1;
-                BLEZ: if(zero || negative) branch = 1;
-                BGTZ: if(~negative && ~zero) branch = 1;
-                BGEZ: if(~negative) branch = 1;
-                default:begin end
-            endcase
-        end
-        // $display("should_branch = %d , branch = %d , zero = %d , negative = %d,opcode = %d",should_branch,branch,zero,negative,opcode);
-    end
+    
     
 
 endmodule

@@ -37,6 +37,7 @@ module mips_core(
     wire is_unsigned;
     wire pc_we;
     wire hit;
+    wire should_branch;
     wire stall = 0;
     wire flush = 0;
     wire reg_write_enable_cache;
@@ -74,7 +75,7 @@ module mips_core(
         .inst_ID(inst_ID),
         .inst_MEM(inst_MEM),
         .inst_EX(inst_EX)
-    );
+        .should_branch(should_branch)
 
     control_unit ControlUnit(
         .halted(halted),
@@ -96,7 +97,8 @@ module mips_core(
         .negative(negative),
         .is_unsigned(is_unsigned),
         .pc_we(pc_we),
-        .hit(hit)
+        .hit(hit),
+        .should_branch(should_branch)
     );
 
     wire [7:0] data_out_datapath[0:3];
