@@ -33,10 +33,10 @@ module control_unit (
     wire [5:0] opcode_EX = inst_EX[31:26];
     wire [5:0] func_EX = inst_EX[5:0];
 
-    assign pc_we = ~is_mem_inst | (is_mem_inst & hit);
+    assign pc_we = ~is_mem_inst | (is_mem_inst & hit); //avaz she
     assign is_mem_inst = (opcode_MEM == LW | opcode_MEM == SW | opcode_MEM == LB | opcode_MEM == SB);
 
-    ALU_CONTROLLER aluController(alu_operation, opcode_EX, func_EX);
+    ALU_CONTROLLER aluController(alu_operation, opcode_ID, func_ID);
 
     localparam [5:0] RTYPE = 6'b000000, ADDIU = 6'b001001, ADDi = 6'b001000,
         SYSCALL = 6'b001100, ADD = 6'b100000 , BEQ = 6'b000100,BGTZ = 6'b000111,

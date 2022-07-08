@@ -18,5 +18,4 @@ main:
         nop
         nop
         nop
-        nop
         syscall

@@ -1,7 +1,7 @@
 module data_path (
     inst,inst_addr , reg_dest, reg_write_enable, alu_src, alu_operation, mem_addr, mem_data_in,mem_data_out,
     mem_or_reg,clk,halted,rst_b,branch,jump,jump_register,pc_or_mem,does_shift_amount_need,zero,negative,
-    is_unsigned,pc_we,flush,stall,reg_write_enable_cache,inst_ID, inst_MEM, inst_EX, should_branch
+    is_unsigned,pc_we,flush,stall,reg_write_enable_cache,inst_ID, inst_MEM, inst_EX, should_branch);
  localparam [5:0] RTYPE = 6'b000000, ADDIU = 6'b001001, ADDi = 6'b001000,
         SYSCALL = 6'b001100, ADD = 6'b100000 , BEQ = 6'b000100,BGTZ = 6'b000111,
         BNE = 6'b000101 , JUMP = 6'b000010,BLEZ = 6'b000110,BGEZ = 6'b000001,
@@ -342,14 +342,13 @@ end
 always @(negedge clk) begin
     $display("\n\n*************************************\nclock  %d\n\n",x);
     x = x + 1;
-    $display("does_shift_amount_need = %d alu_src =  %d alu_src_ID = %d alu_src_EX = %d immediate_ID = %d, immediate_EX = %d",does_shift_amount_need, alu_src,alu_src_ID, alu_src_EX, immediate_data_ID, immediate_data_EX);
+    $display("does_shift_amount_need = %d alu_src =  %d alu_src_ID = %d alu_src_EX = %d immediate_ID_EX = %d %d",does_shift_amount_need, alu_src,alu_src_ID, alu_src_EX, immediate_data_ID, immediate_data_EX);
     $display("alu second src = %d, alu first src = %d, alu result EX = %d, alu result MEM %d, alu_result_WB = %d", alu_second_source, alu_first_source, alu_result_EX, alu_result_MEM, alu_result_WB);
     $display("reg_write_enable WB = %d, mem_or_reg = %d, pc_or_mem = %d, rd_data = %d, rd_num = %d", reg_write_enable_WB, mem_or_reg_WB, pc_or_mem_WB,rd_data,rd_num_WB);
     $display("rd_num_ID/EX/MEM/WB = %d%d%d%d",rd_num_ID,rd_num_EX,rd_num_MEM,rd_num_WB);
     $display("pc_or_mem = %d, reg_dst = %d",pc_or_mem, reg_dest);
     $display("immediate ID,EX =  %d,%d" ,immediate_data_ID,immediate_data_EX);
-    $display("does_shift_amount_need = %d alu_src =  %d alu_src_ID = %d alu_src_EX = %d",does_shift_amount_need, alu_src,alu_src_ID, alu_src_EX);
-    $display("alu1 = %d alusec =  %d ",alu_first_source,alu_second_source);
+    
 end
 
 

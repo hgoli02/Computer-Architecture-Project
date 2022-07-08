@@ -1,5 +1,6 @@
 		.text
-__start:	addiu $v0, $zero, 10
+__start:
+		addiu $v0, $zero, 10
 		addiu $t0, $zero, 5
 		nop
 		nop

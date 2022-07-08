@@ -45,8 +45,8 @@ module ALU #(parameter XLEN = 32) (input1, input2, alu_operation, out, negative,
             default: out = {XLEN{1'b0}};
         endcase
     end
-    always @(alu_operation) begin
-        $display("alu_op = %h , input1 = %h , input2 = %h ,out = %h",alu_operation,input1,input2,out);
-    end
+    // always @(alu_operation) begin
+    //     $display("alu_op = %h , input1 = %h , input2 = %h ,out = %h",alu_operation,input1,input2,out);
+    // end
 
 endmodule

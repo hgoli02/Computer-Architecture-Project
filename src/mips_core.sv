@@ -74,8 +74,9 @@ module mips_core(
         .stall(stall),
         .inst_ID(inst_ID),
         .inst_MEM(inst_MEM),
-        .inst_EX(inst_EX)
+        .inst_EX(inst_EX),
         .should_branch(should_branch)
+    );
 
     control_unit ControlUnit(
         .halted(halted),
