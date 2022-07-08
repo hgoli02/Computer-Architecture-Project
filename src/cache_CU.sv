@@ -9,7 +9,8 @@ module cache_cu (
     opcode,
     reg_write_enable,
     cache_in_select,
-    is_byte
+    is_byte,
+    stall
 );
     integer counter;
     output reg cache_we;
@@ -18,7 +19,8 @@ module cache_cu (
     output reg reg_write_enable;
     output reg cache_in_select;
     output reg is_byte;
-    
+    output reg stall;
+
     input clk;
     input dirty;
     input rst_b;
@@ -39,6 +41,7 @@ module cache_cu (
     //Handle FSM states
     always @(*) begin
         reg_write_enable = 0;
+        stall = 0;
         if(opcode == LW || opcode == SW || opcode == SB || opcode == LB)begin
             // nstate = init;
             cache_in_select = 0;
@@ -70,6 +73,7 @@ module cache_cu (
                             default: begin end
                         endcase
                     end else begin
+                        stall = 1;
                         if(dirty == 1) begin
                             mem_in_select = 1;
                             mem_we = 1;
@@ -79,6 +83,7 @@ module cache_cu (
                     end
                 end 
                 write: begin
+                    stall = 1;
                     if (counter <= 4)
                         mem_in_select = 1;
                     if (counter == 5) begin
@@ -88,6 +93,7 @@ module cache_cu (
                     end
                 end
                 read: begin
+                    stall = 1;
                     if (counter == 4) begin
                         //now mem_data_out is ready enable cache we
                         cache_we = 1;

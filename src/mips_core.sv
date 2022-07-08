@@ -38,8 +38,8 @@ module mips_core(
     wire pc_we;
     wire hit;
     wire should_branch;
-    wire stall = 0;
     wire flush = 0;
+    wire stall;
     wire reg_write_enable_cache;
     wire [31:0] inst_ID;
     wire [31:0] inst_MEM;
@@ -99,7 +99,8 @@ module mips_core(
         .is_unsigned(is_unsigned),
         .pc_we(pc_we),
         .hit(hit),
-        .should_branch(should_branch)
+        .should_branch(should_branch),
+        .stall(stall)
     );
 
     wire [7:0] data_out_datapath[0:3];
@@ -118,7 +119,8 @@ module mips_core(
         .mips_machine_addr(mem_addr),
         .clk(clk),
         .reg_write_enable(reg_write_enable_cache),
-        .rst_b(rst_b)
+        .rst_b(rst_b),
+        .stall(stall)
     );
 
     // wire [XLEN - 1:0] datapath_mem_addr;

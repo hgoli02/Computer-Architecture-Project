@@ -7,6 +7,9 @@ main:
 l_0:    
         addiu $5, $zero, 1
         j l_1
+        nop
+        nop
+        nop
         addiu $10, $10, 0xf00
         ori $0, $0, 0
         ori $0, $0, 0
@@ -14,11 +17,17 @@ l_0:
         syscall        
 l_1:
         bne $zero, $zero, l_3
+        nop
+        nop
+        nop
         ori $0, $0, 0
         ori $0, $0, 0
         addiu $6, $zero, 0x1337
 l_2:
         beq $zero, $zero, l_4
+        nop
+        nop
+        nop
         ori $0, $0, 0
         ori $0, $0, 0
         # Should not reach here
@@ -30,6 +39,9 @@ l_3:
         syscall
 l_4:
         addiu $7, $zero, 0xd00d
+        nop
+        nop
+        nop
         syscall
         
          

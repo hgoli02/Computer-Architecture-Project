@@ -1,11 +1,12 @@
 module memory_cache (
-    data_in, data_out, addr, hit, mem_we, opcode, mips_machine_data_in, mips_machine_data_out, mips_machine_addr, clk, rst_b, reg_write_enable
+    data_in, data_out, addr, hit, mem_we, opcode, mips_machine_data_in, mips_machine_data_out, mips_machine_addr, clk, rst_b, reg_write_enable,stall
 );
     output hit;
     output mem_we;
     output [7:0] mips_machine_data_in [0:3];
     output [7:0] data_out [0:3];
     output [31:0] mips_machine_addr;
+    output stall;
     output reg_write_enable;
     input [7:0] data_in [0:3];
     input [31:0] addr;
@@ -46,7 +47,8 @@ module memory_cache (
         .opcode(opcode),
         .reg_write_enable(reg_write_enable),
         .cache_in_select(cache_in_select),
-        .is_byte(is_byte)
+        .is_byte(is_byte),
+        .stall(stall)
     );
 
     // initial begin

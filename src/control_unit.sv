@@ -1,6 +1,6 @@
 module control_unit (
     inst_ID, inst_MEM, inst_EX, halted, alu_src, reg_dest, pc_or_mem, mem_or_reg, branch, jump_register,jump,
-    reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned,pc_we,hit,should_branch//,is_byte
+    reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned,pc_we,hit,should_branch,stall//,is_byte
 );
     output reg halted;
     output reg alu_src;
@@ -25,6 +25,7 @@ module control_unit (
     input [31:0] inst_EX;
     input negative,zero;
     input hit;
+    input stall;
 
     wire [5:0] opcode_ID = inst_ID[31:26];
     wire [5:0] func_ID = inst_ID[5:0];
@@ -33,7 +34,7 @@ module control_unit (
     wire [5:0] opcode_EX = inst_EX[31:26];
     wire [5:0] func_EX = inst_EX[5:0];
 
-    assign pc_we = ~is_mem_inst | (is_mem_inst & hit); //avaz she
+    assign pc_we = ~stall; //avaz she
     assign is_mem_inst = (opcode_MEM == LW | opcode_MEM == SW | opcode_MEM == LB | opcode_MEM == SB);
 
     ALU_CONTROLLER aluController(alu_operation, opcode_ID, func_ID);
