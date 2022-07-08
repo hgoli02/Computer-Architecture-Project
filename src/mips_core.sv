@@ -37,6 +37,8 @@ module mips_core(
     wire is_unsigned;
     wire pc_we;
     wire hit;
+    wire stall;
+    wire flush;
     wire [5:0] opcode = inst[31:26];
 
 
@@ -62,7 +64,9 @@ module mips_core(
         .zero(zero),
         .negative(negative),
         .is_unsigned(is_unsigned),
-        .pc_we(pc_we)
+        .pc_we(pc_we),
+        .flush(flush),
+        .stall(stall)
     );
 
     control_unit ControlUnit(
