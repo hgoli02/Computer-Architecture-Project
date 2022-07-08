@@ -316,7 +316,7 @@ end
 always @(negedge clk) begin
     $display("\n\n*************************************\nclock  %d\n\n",x);
     x = x + 1;
-    //$display("reg_write_enable_cache =  %b, reg_write_enable_cu = %b", reg_write_enable_cache, reg_write_enable);
+    $display("immediate ID,EX =  %d,%d" ,immediate_data_ID,immediate_data_EX);
 end
 
 initial begin
