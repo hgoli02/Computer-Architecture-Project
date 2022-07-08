@@ -42,6 +42,7 @@ module mips_core(
     wire reg_write_enable_cache;
     wire [31:0] inst_ID;
     wire [31:0] inst_MEM;
+    wire [31:0] inst_EX;
 
 
     data_path DataPath(
@@ -71,12 +72,15 @@ module mips_core(
         .flush(flush),
         .stall(stall),
         .inst_ID(inst_ID),
-        .inst_MEM(inst_MEM)
+        .inst_MEM(inst_MEM),
+        .inst_EX(inst_EX)
     );
 
     control_unit ControlUnit(
         .halted(halted),
-        .inst(inst_ID),
+        .inst_ID(inst_ID),
+        .inst_MEM(inst_MEM),
+        .inst_EX(inst_EX),
         .alu_src(alu_src),
         .reg_dest(reg_dest), 
         .pc_or_mem(pc_or_mem),

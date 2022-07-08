@@ -1,5 +1,5 @@
 module control_unit (
-    inst, halted, alu_src, reg_dest, pc_or_mem, mem_or_reg, branch, jump_register,jump,
+    inst_ID, inst_MEM, inst_EX, halted, alu_src, reg_dest, pc_or_mem, mem_or_reg, branch, jump_register,jump,
     reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned,pc_we,hit//,is_byte
 );
     output reg halted;
@@ -20,17 +20,23 @@ module control_unit (
     reg should_branch;
     wire is_mem_inst;
 
-    input [31:0] inst;
+    input [31:0] inst_ID;
+    input [31:0] inst_MEM;
+    input [31:0] inst_EX;
     input negative,zero;
     input hit;
 
-    wire [5:0] opcode = inst[31:26];
-    wire [5:0] func = inst[5:0];
+    wire [5:0] opcode_ID = inst_ID[31:26];
+    wire [5:0] func_ID = inst_ID[5:0];
+    wire [5:0] opcode_MEM = inst_MEM[31:26];
+    wire [5:0] func_MEM = inst_MEM[5:0];
+    wire [5:0] opcode_EX = inst_EX[31:26];
+    wire [5:0] func_EX = inst_EX[5:0];
 
     assign pc_we = ~is_mem_inst | (is_mem_inst & hit);
-    assign is_mem_inst = (opcode == LW | opcode == SW | opcode == LB | opcode == SB);
+    assign is_mem_inst = (opcode_MEM == LW | opcode_MEM == SW | opcode_MEM == LB | opcode_MEM == SB);
 
-    ALU_CONTROLLER aluController(alu_operation, opcode, func);
+    ALU_CONTROLLER aluController(alu_operation, opcode_EX, func_EX);
 
     localparam [5:0] RTYPE = 6'b000000, ADDIU = 6'b001001, ADDi = 6'b001000,
         SYSCALL = 6'b001100, ADD = 6'b100000 , BEQ = 6'b000100,BGTZ = 6'b000111,
@@ -56,9 +62,9 @@ module control_unit (
         is_unsigned = 0;
         // is_byte = 0;        
         //reset control signals!
-        case (opcode)
+        case (opcode_ID)
             RTYPE:
-            case (func)
+            case (func_ID)
                 SYSCALL: begin
                     halted = 1;
                 end
@@ -210,7 +216,7 @@ module control_unit (
     always @(should_branch ,zero , negative)begin //TODO: Big Bug (This part should be in datapath and only the should branch signal be activated)
         branch = 0;
         if (should_branch)begin
-            case(opcode)
+            case(opcode_MEM)
                 BEQ: if(zero) branch = 1;
                 BNE: if(~zero) branch = 1;
                 BLEZ: if(zero || negative) branch = 1;

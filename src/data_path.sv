@@ -1,7 +1,7 @@
 module data_path (
     inst,inst_addr , reg_dest, reg_write_enable, alu_src, alu_operation, mem_addr, mem_data_in,mem_data_out,
     mem_or_reg,clk,halted,rst_b,branch,jump,jump_register,pc_or_mem,does_shift_amount_need,zero,negative,
-    is_unsigned,pc_we,flush,stall,reg_write_enable_cache,inst_ID, inst_MEM
+    is_unsigned,pc_we,flush,stall,reg_write_enable_cache,inst_ID, inst_MEM, inst_EX
 );
 parameter XLEN = 32;
 input clk, halted, rst_b;
@@ -37,6 +37,7 @@ output zero;
 output negative;
 output [31:0] inst_ID;
 output [31:0] inst_MEM;
+output [31:0] inst_EX;
 
 //IF
 wire[XLEN - 1 : 0 ] pc_incremented_IF;
@@ -87,20 +88,20 @@ assign shifted_first16bit_extended_inst_ID = sign_extended_first16bit_inst << 2;
 Mux unsigned_mux(.select(is_unsigned_ID),.in0(sign_extended_first16bit_inst),.in1({{(XLEN/2){1'b0}},inst_ID[15:0]}),
 .out(immediate_data_ID));
 wire [4:0] write_reg_num_inst;
-Mux #(5) write_reg_file_mux(.select(reg_dest_ID),.in0(inst[20:16]),.in1(inst_ID[15:11]),.out(write_reg_num_inst));
+Mux #(5) write_reg_file_mux(.select(reg_dest_ID),.in0(inst_ID[20:16]),.in1(inst_ID[15:11]),.out(write_reg_num_inst));
 Mux #(5) write_reg_if_jal_mux(.select(pc_or_mem_ID),.in0(write_reg_num_inst),.in1(5'd31),.out(rd_num_ID));
 wire [XLEN - 5 : 0] shifted_first26bit_inst;
 assign shifted_first26bit_inst = {2'b0,inst_ID[25:0]} << 2;
 assign pc_jump_address_ID = {pc_incremented_ID[31:28],shifted_first26bit_inst};
-assign shift_amount_32bit_ID = {{(XLEN - 5){1'b0}},inst[10:6]};
+assign shift_amount_32bit_ID = {{(XLEN - 5){1'b0}},inst_ID[10:6]};
 
 
 
 regfile RegisterFile(
         .rs_data(rs_data_ID),
         .rt_data(rt_data_ID),
-        .rs_num(inst[25:21]),
-        .rt_num(inst[20:16]),
+        .rs_num(inst_ID[25:21]),
+        .rt_num(inst_ID[20:16]),
         .rd_num(rd_num_WB),
         .rd_data(rd_data),
         .rd_we(reg_write_enable_WB),
@@ -318,7 +319,11 @@ end
 always @(negedge clk) begin
     $display("\n\n*************************************\nclock  %d\n\n",x);
     x = x + 1;
-    $display("does_shift_amount_need = %d alu_src =  %d alu_src_ID = %d alu_src_EX = %d",does_shift_amount_need, alu_src,alu_src_ID, alu_src_EX);
+    $display("does_shift_amount_need = %d alu_src =  %d alu_src_ID = %d alu_src_EX = %d immediate_ID = %d, immediate_EX = %d",does_shift_amount_need, alu_src,alu_src_ID, alu_src_EX, immediate_data_ID, immediate_data_EX);
+    $display("alu second src = %d, alu first src = %d, alu result EX = %d, alu result MEM %d, alu_result_WB = %d", alu_second_source, alu_first_source, alu_result_EX, alu_result_MEM, alu_result_WB);
+    $display("reg_write_enable WB = %d, mem_or_reg = %d, pc_or_mem = %d, rd_data = %d, rd_num = %d", reg_write_enable_WB, mem_or_reg_WB, pc_or_mem_WB,rd_data,rd_num_WB);
+    $display("rd_num_ID/EX/MEM/WB = %d%d%d%d",rd_num_ID,rd_num_EX,rd_num_MEM,rd_num_WB);
+    $display("pc_or_mem = %d, reg_dst = %d",pc_or_mem, reg_dest);
 end
 
 
