@@ -1,5 +1,5 @@
 module control_unit (
-    opcode, func, halted, alu_src, reg_dest, pc_or_mem, mem_or_reg, branch, jump_register,jump,
+    inst, halted, alu_src, reg_dest, pc_or_mem, mem_or_reg, branch, jump_register,jump,
     reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned,pc_we,hit//,is_byte
 );
     output reg halted;
@@ -20,10 +20,12 @@ module control_unit (
     reg should_branch;
     wire is_mem_inst;
 
-    input[5:0] opcode;
-    input[5:0] func;
+    input [31:0] inst;
     input negative,zero;
     input hit;
+
+    wire [5:0] opcode = inst[31:26];
+    wire [5:0] func = inst[5:0];
 
     assign pc_we = ~is_mem_inst | (is_mem_inst & hit);
     assign is_mem_inst = (opcode == LW | opcode == SW | opcode == LB | opcode == SB);
@@ -46,7 +48,7 @@ module control_unit (
         jump = 0;
         reg_write_enable = 0;
         does_shift_amount_need = 0;
-        mem_or_reg = 0;
+        mem_or_reg = 0; 
         alu_src = 0;
         mem_write_en = 0;
         reg_dest = 0;

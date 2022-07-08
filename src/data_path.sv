@@ -1,14 +1,14 @@
 module data_path (
     inst,inst_addr , reg_dest, reg_write_enable, alu_src, alu_operation, mem_addr, mem_data_in,mem_data_out,
     mem_or_reg,clk,halted,rst_b,branch,jump,jump_register,pc_or_mem,does_shift_amount_need,zero,negative,
-    is_unsigned,pc_we,flush,stall,reg_write_enable_cache
+    is_unsigned,pc_we,flush,stall,reg_write_enable_cache,inst_ID, inst_MEM
 );
 parameter XLEN = 32;
 input clk, halted, rst_b;
 input wire [XLEN - 1:0] inst;
 input reg_write_enable_cache;
-output wire[XLEN - 1:0] mem_addr, inst_addr;
-output  wire [7:0]  mem_data_in[0:3];
+output wire[XLEN - 1:0] mem_addr, inst_addr; //bug
+output  wire [7:0]  mem_data_in[0:3]; //bug
 input  wire [7:0]  mem_data_out[0:3];
 wire[XLEN - 1:0] memory_in;
 wire[XLEN - 1:0] memory_out_MEM;
@@ -35,6 +35,8 @@ input is_unsigned;
 
 output zero;
 output negative;
+output [31:0] inst_ID;
+output [31:0] inst_MEM;
 
 //IF
 wire[XLEN - 1 : 0 ] pc_incremented_IF;
@@ -317,9 +319,8 @@ always @(negedge clk) begin
     $display("\n\n*************************************\nclock  %d\n\n",x);
     x = x + 1;
     $display("immediate ID,EX =  %d,%d" ,immediate_data_ID,immediate_data_EX);
+    $display("does_shift_amount_need = %d alu_src =  %d alu_src_ID = %d alu_src_EX = %d",does_shift_amount_need, alu_src,alu_src_ID, alu_src_EX);
 end
 
-initial begin
-    $monitor("reg_write_enable_ID/EXE/MEM/WB = %b %b %b %b rd_data = %d",reg_write_enable_ID,reg_dest_EX,reg_write_enable_MEM,reg_write_enable_WB, rd_data);
-end
+
 endmodule
