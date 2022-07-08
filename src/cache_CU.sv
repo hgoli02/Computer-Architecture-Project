@@ -38,6 +38,7 @@ module cache_cu (
 
     //Handle FSM states
     always @(*) begin
+        reg_write_enable = 0;
         if(opcode == LW || opcode == SW || opcode == SB || opcode == LB)begin
             // nstate = init;
             cache_in_select = 0;
@@ -111,21 +112,21 @@ module cache_cu (
         end
     end
 
-    always @(negedge clk) begin
-        if (opcode == LW) begin
-            $display("LW instruction");
-            $display("Current state = %d next state = %d",pstate,nstate);
-        end else if (opcode == SW)begin
-            $display("SW instruction");
-            $display("Current state = %d next state = %d",pstate,nstate);
-        end else if (opcode == LB)begin
-            $display("LB instruction");
-            $display("Current state = %d next state = %d",pstate,nstate);
-        end else if (opcode == SB)begin
-            $display("SB instruction");
-            $display("Current state = %d next state = %d",pstate,nstate);
-        end
-        $display("counter = %d",counter);
+    // always @(negedge clk) begin
+    //     if (opcode == LW) begin
+    //         $display("LW instruction");
+    //         $display("Current state = %d next state = %d",pstate,nstate);
+    //     end else if (opcode == SW)begin
+    //         $display("SW instruction");
+    //         $display("Current state = %d next state = %d",pstate,nstate);
+    //     end else if (opcode == LB)begin
+    //         $display("LB instruction");
+    //         $display("Current state = %d next state = %d",pstate,nstate);
+    //     end else if (opcode == SB)begin
+    //         $display("SB instruction");
+    //         $display("Current state = %d next state = %d",pstate,nstate);
+    //     end
+    //     $display("counter = %d",counter);
       
-    end
+    // end
 endmodule

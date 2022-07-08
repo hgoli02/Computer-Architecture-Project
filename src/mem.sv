@@ -49,8 +49,8 @@ module memory_cache (
         .is_byte(is_byte)
     );
 
-    initial begin
-        $monitor("data_in %b, data_out %b, addr %b, hit %b, mem_we %b,\nopcode %b, mips_machine_data_in %b, mips_machine_data_out %b, mips_machine_addr %b, clk %b, rst_b %b, dirty_bit,mem_in_select = %b,cache_in_select = %b,cache_we = %b,reg_write_enable = %bis_byte = %b",data_in, data_out, addr, hit, mem_we, opcode, mips_machine_data_in, mips_machine_data_out, mips_machine_addr, clk, rst_b,dirty_bit,mem_in_select,cache_in_select,cache_we,reg_write_enable, is_byte);
-    end
+    // initial begin
+    //     $monitor("data_in %b, data_out %b, addr %b, hit %b, mem_we %b,\nopcode %b, mips_machine_data_in %b, mips_machine_data_out %b, mips_machine_addr %b, clk %b, rst_b %b, dirty_bit,mem_in_select = %b,cache_in_select = %b,cache_we = %b,reg_write_enable = %bis_byte = %b",data_in, data_out, addr, hit, mem_we, opcode, mips_machine_data_in, mips_machine_data_out, mips_machine_addr, clk, rst_b,dirty_bit,mem_in_select,cache_in_select,cache_we,reg_write_enable, is_byte);
+    // end
     
 endmodule

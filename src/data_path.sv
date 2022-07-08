@@ -1,11 +1,12 @@
 module data_path (
     inst,inst_addr , reg_dest, reg_write_enable, alu_src, alu_operation, mem_addr, mem_data_in,mem_data_out,
     mem_or_reg,clk,halted,rst_b,branch,jump,jump_register,pc_or_mem,does_shift_amount_need,zero,negative,
-    is_unsigned,pc_we,flush,stall
+    is_unsigned,pc_we,flush,stall,reg_write_enable_cache
 );
 parameter XLEN = 32;
 input clk, halted, rst_b;
 input wire [XLEN - 1:0] inst;
+input reg_write_enable_cache;
 output wire[XLEN - 1:0] mem_addr, inst_addr;
 output  wire [7:0]  mem_data_in[0:3];
 input  wire [7:0]  mem_data_out[0:3];
@@ -254,13 +255,13 @@ wire [31:0] alu_result_MEM;
 wire [4:0] rd_num_MEM;
 wire [5:0] opcode_MEM;
 
-wire reg_write_enable_MEM2 = reg_write_enable_MEM | reg_write_enable;
+wire reg_write_enable_MEM2 = reg_write_enable_MEM | reg_write_enable_cache;
 
 assign mem_addr = alu_result_MEM;
 assign memory_in = rt_data_MEM;
 wire [XLEN - 1 : 0] pc_after_j_or_branch;
 wire[XLEN -1 : 0 ] pc_value_after_branch;
-Mux mux_if_branch(.select(branch_MEM),.in0(pc_incremented_MEM),.in1(pc_branch_value_MEM),.out(pc_value_after_branch));
+Mux mux_if_branch(.select(branch_MEM),.in0(pc_incremented_IF),.in1(pc_branch_value_MEM),.out(pc_value_after_branch));
 Mux mux_if_jump(.select(jump_MEM),.in0(pc_value_after_branch),.in1(pc_jump_address_MEM),.out(pc_after_j_or_branch));
 Mux mux_jump_register(.select(jump_register_MEM),.in0(pc_after_j_or_branch),.in1(rs_data_MEM),.out(pc_input));
 
@@ -313,8 +314,12 @@ initial begin
     x = 0;
 end
 always @(negedge clk) begin
-    $display("\n\n*************************************\nclock = %d\n\n",x);
+    $display("\n\n*************************************\nclock  %d\n\n",x);
     x = x + 1;
+    //$display("reg_write_enable_cache =  %b, reg_write_enable_cu = %b", reg_write_enable_cache, reg_write_enable);
 end
 
+initial begin
+    $monitor("reg_write_enable_ID/EXE/MEM/WB = %b %b %b %b rd_data = %d",reg_write_enable_ID,reg_dest_EX,reg_write_enable_MEM,reg_write_enable_WB, rd_data);
+end
 endmodule

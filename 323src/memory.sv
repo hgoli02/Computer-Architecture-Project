@@ -41,10 +41,10 @@ module memory(
                     mem[i] <= 0;
             end
         end else begin
-        $display("%h : %h",ea,{data_in[3],data_in[2],data_in[1],data_in[0]});
-            $display("we real one: %h", we);
+        //$display("%h : %h",ea,{data_in[3],data_in[2],data_in[1],data_in[0]});
+            //$display("we real one: %h", we);
             if (we) begin
-                $display("writing %h %h %h %h in %h",data_in[0],data_in[1],data_in[2],data_in[3],ea);
+                //$display("writing %h %h %h %h in %h",data_in[0],data_in[1],data_in[2],data_in[3],ea);
                 mem[ea + 0] <= data_in[0];
                 mem[ea + 1] <= data_in[1];
                 mem[ea + 2] <= data_in[2];

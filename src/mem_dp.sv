@@ -48,13 +48,13 @@ module memory_datapath (
         .rst_b(rst_b)
     );
 
-    always @(posedge clk) begin
-        $display("cache_addr = %h mem_addr = %h hit = %h mem_data_out = %h cache_data_out = %h data_in = %h mem_data_in = %h",addr, mem_addr, hit,
-        {mem_data_out[0],mem_data_out[1],mem_data_out[2],mem_data_out[3]},
-         {data_out[0],data_out[1],data_out[2],data_out[3]},
-         {data_in[0],data_in[1],data_in[2],data_in[3]},
-         {mem_data_in[0],mem_data_in[1],mem_data_in[2],mem_data_in[3]});
-    end
+    // always @(posedge clk) begin
+    //     $display("cache_addr = %h mem_addr = %h hit = %h mem_data_out = %h cache_data_out = %h data_in = %h mem_data_in = %h",addr, mem_addr, hit,
+    //     {mem_data_out[0],mem_data_out[1],mem_data_out[2],mem_data_out[3]},
+    //      {data_out[0],data_out[1],data_out[2],data_out[3]},
+    //      {data_in[0],data_in[1],data_in[2],data_in[3]},
+    //      {mem_data_in[0],mem_data_in[1],mem_data_in[2],mem_data_in[3]});
+    // end
 
     assign mem_addr = mem_in_select == 1 ? cache_miss_addr : addr;
     assign mem_data_in = data_out;

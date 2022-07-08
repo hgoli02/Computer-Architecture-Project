@@ -38,9 +38,9 @@ module cache (
     assign hit = (cache_tags[addr[12:2]] == addr [31:13]) && (valid_bits[addr[12:2]] == 1) ? 1'b1 : 1'b0;
     assign dirty_bit = dirty_bits[addr[12:2]];
 
-    always @(hit) begin
-        $display("cache tag = %h, addr[31:13] = %h  valid bit = %h",cache_tags[addr[12:2]],addr [31 : 13],valid_bits[addr[12:2]]);
-    end
+    // always @(hit) begin
+    //     $display("cache tag = %h, addr[31:13] = %h  valid bit = %h",cache_tags[addr[12:2]],addr [31 : 13],valid_bits[addr[12:2]]);
+    // end
 
     // wire [31:0] ea = addr & 31'hfffffffc;
     wire [12:0] ea = addr[12:0] & 13'h1ffc;
@@ -97,10 +97,10 @@ module cache (
                     mem [ea + 1] <= data_in[2];
                     mem [ea + 0] <= data_in[3];
                 end
-                $display("writing %h in block = %h new tag id = %h, curr tag id = %h",{data_in[3],data_in[2],data_in[1],data_in[0]},addr[12:2], addr[31:13],cache_tags[addr[12:2]]);
+                //$display("writing %h in block = %h new tag id = %h, curr tag id = %h",{data_in[3],data_in[2],data_in[1],data_in[0]},addr[12:2], addr[31:13],cache_tags[addr[12:2]]);
             end 
         end
-        $display("dataout = %h %h %h %h",data_out[3],data_out[2],data_out[1],data_out[0]);
+        //$display("dataout = %h %h %h %h",data_out[3],data_out[2],data_out[1],data_out[0]);
     end
     // always @(negedge clk) begin
     //     $display("mem[ea] = %h , mem[ea+1] = %h , mem[ea+2] = %h , mem[ea+3] = %h , ea = %h , addr[12:0] = %h",mem[ea],mem[ea+1],mem[ea+2],mem[ea+3],ea,addr[12:0]);

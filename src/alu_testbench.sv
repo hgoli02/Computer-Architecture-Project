@@ -64,8 +64,8 @@ initial begin
     #5;
 end
 
-initial begin
-    $monitor("alu_operation = %d , out = %b , negative = %b , zero = %b", alu_operation, out, negative, zero);
-end
+// initial begin
+//     $monitor("alu_operation = %d , out = %b , negative = %b , zero = %b", alu_operation, out, negative, zero);
+// end
 
 endmodule
