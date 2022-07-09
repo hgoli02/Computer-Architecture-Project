@@ -31,20 +31,17 @@ main:
         #;; Place a test pattern in memory
         sw $t2 , 0($t0) #miss to save
         sw $t3 , 0($t0) #hit to save
-	nop
-	nop
-        nop
-        nop
         lw $t6 , 0($t0) #hit to load
         sw $t5 , 0($t1) #miss to save , dirty bit = 1
         lw $t7 , 0($t0) #miss to load , dirty bit = 1
-        nop
-        nop
-        nop
         lw $t8 , 0($t1) #miss to load , dirty bit = 0
         #;; Calculate a "checksum" for easy comparison
+        nop
+        nop
+        nop
+        nop
         add    $s0, $t7, $t8
-        #;;  Quit out 
+        # ;;  Quit out 
         addiu $v0, $zero, 0xa
         nop
 	nop

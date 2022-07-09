@@ -42,13 +42,14 @@ module cache_cu (
     always @(*) begin
         reg_write_enable = 0;
         stall = 0;
+        cache_we = 0;
+        cache_in_select = 0;
+        mem_in_select = 0;
+        mem_we = 0;
+        is_byte = 0;
         if(opcode == LW || opcode == SW || opcode == SB || opcode == LB)begin
             // nstate = init;
-            cache_in_select = 0;
-            cache_we = 0;
-            mem_in_select = 0;
-            mem_we = 0;
-            is_byte = 0;
+            
             case (pstate)
                 init: begin  
                     counter = 0;
@@ -132,7 +133,7 @@ module cache_cu (
     //         $display("SB instruction");
     //         $display("Current state = %d next state = %d",pstate,nstate);
     //     end
-    //     $display("counter = %d",counter);
-      
+    //     $display("counter = %d , hit = %b",counter,hit);
+    //     $display("cache_we = %b , mem_we = %b",cache_we,mem_we);
     // end
 endmodule

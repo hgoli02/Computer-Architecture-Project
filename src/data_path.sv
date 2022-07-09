@@ -335,21 +335,22 @@ Mux mem_or_alu_result_mux(.select(mem_or_reg_WB),.in0(alu_result_WB),.in1(memory
 Mux memoralu_or_pc_incremented_mux(.select(pc_or_mem_WB),.in0(mem_or_alu_write_data),.in1(pc_incremented_WB),.out(rd_data));
 
 
-integer x;
-initial begin
-    x = 0;
-end
-always @(negedge clk) begin
-    $display("\n\n*************************************\nclock  %d\n\n",x);
-    x = x + 1;
-    $display("does_shift_amount_need = %d alu_src =  %d alu_src_ID = %d alu_src_EX = %d immediate_ID_EX = %d %d",does_shift_amount_need, alu_src,alu_src_ID, alu_src_EX, immediate_data_ID, immediate_data_EX);
-    $display("alu second src = %d, alu first src = %d, alu result EX = %d, alu result MEM %d, alu_result_WB = %d", alu_second_source, alu_first_source, alu_result_EX, alu_result_MEM, alu_result_WB);
-    $display("reg_write_enable WB = %d, mem_or_reg = %d, pc_or_mem = %d, rd_data = %d, rd_num = %d", reg_write_enable_WB, mem_or_reg_WB, pc_or_mem_WB,rd_data,rd_num_WB);
-    $display("rd_num_ID/EX/MEM/WB = %d%d%d%d",rd_num_ID,rd_num_EX,rd_num_MEM,rd_num_WB);
-    $display("pc_or_mem = %d, reg_dst = %d",pc_or_mem, reg_dest);
-    $display("immediate ID,EX =  %d,%d" ,immediate_data_ID,immediate_data_EX);
+// integer x;
+// initial begin
+//     x = 0;
+// end
+// always @(negedge clk) begin
+//     $display("\n\n*************************************\nclock  %d\n\n",x);
+//     x = x + 1;
+//     // $display("does_shift_amount_need = %d alu_src =  %d alu_src_ID = %d alu_src_EX = %d immediate_ID_EX = %d %d",does_shift_amount_need, alu_src,alu_src_ID, alu_src_EX, immediate_data_ID, immediate_data_EX);
+//     // $display("alu second src = %d, alu first src = %d, alu result EX = %d, alu result MEM %d, alu_result_WB = %d", alu_second_source, alu_first_source, alu_result_EX, alu_result_MEM, alu_result_WB);
+//     // $display("reg_write_enable WB = %d, mem_or_reg = %d, pc_or_mem = %d, rd_data = %d, rd_num = %d", reg_write_enable_WB, mem_or_reg_WB, pc_or_mem_WB,rd_data,rd_num_WB);
+//     $display("rd_num_ID/EX/MEM/WB = %d %d %d %d",rd_num_ID,rd_num_EX,rd_num_MEM,rd_num_WB);
+//     $display("pc_or_mem = %d, reg_dst = %d",pc_or_mem, reg_dest);
+//     // $display("immediate ID,EX =  %d,%d" ,immediate_data_ID,immediate_data_EX);
+//     $display("inst ID,EX,MEM =  %h,%h,%h" ,inst_ID,inst_EX,inst_MEM);
     
-end
+// end
 
 
 endmodule
