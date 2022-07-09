@@ -5,3 +5,6 @@ Phase 1 single cycle Datapath
 
 
 in phase 2 we added cache and simulated memory delays (found in doc)
+
+
+![alt text](https://s24.picofile.com/file/8451453684/Visio_pipe.png)
