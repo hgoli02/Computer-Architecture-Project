@@ -13,7 +13,8 @@ module floating_point_ALU(
 );
 
     localparam [3:0] NOP = 4'd0, ADD = 4'd1, SUB = 4'd2, MUL = 4'd3,
-                     DIV = 4'd4 ,RND = 4'd5, SLT = 4'd6, INV = 4'd7;
+                     DIV = 4'd4 ,RND = 4'd5, SLT = 4'd6, INV = 4'd7,
+                     BIAS = 8'd127;
 
 
 
