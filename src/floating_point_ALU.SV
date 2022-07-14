@@ -240,7 +240,7 @@ module floating_point_ALU(
             DIV : 
                  begin
                     if(input2 == 0) begin
-                        division_by_zero = 1;
+                       division_by_zero = 1;
                     end
                     else begin
                         if(input1 == 0) begin
@@ -277,8 +277,53 @@ module floating_point_ALU(
 
             RND : 
                  begin
-                
+                    exp2 = exp1 - 127;
+                    if(exp1 < 126) begin
+                        result = 0;
+                    end
+                    else begin
+                        if(exp1 > 149) begin
+                            result = input1;
+                        end
+                        else begin
+                            if(exp1 == 126) begin
+                                if(mantissa1[23]) begin
+                                    result = {sign1, 8'b01111111, 23'b0};
+                                end
+                                else begin
+                                    result = 0; 
+                                end
+                                   
+                            end
+                            else begin
+                                
+                                if(mantissa1[22 - exp2]) begin
+                                    mantissa2 = 0;
+                                    mantissa2[22 - exp2] = 1;
+                                    mantissa_res = mantissa1 + mantissa2;
+                                    mantissa_res = mantissa_res >> 22 - exp2;
+                                    mantissa_res = mantissa_res << 22 - exp2;
+                                    sign_res = sign1;
+                                    exp_res = exp1;
+                                    if(mantissa_res[24]) begin
+                                        mantissa_res = mantissa_res >> 1;
+                                        exp_res = exp_res + 1;
+                                    end
+                                end
+                                else begin
+                                    mantissa_res = mantissa1;
+                                    mantissa_res = mantissa_res >> 22 - exp2;
+                                    mantissa_res = mantissa_res << 22 - exp2;
+                                    sign_res = sign1;
+                                    exp_res = exp1;
+                                end
+                                result = {sign_res,exp_res,mantissa_res[22:0]};
+                            end
+                        end
+                    end
                  end
+
+                    
 
             SLT : 
                  begin
@@ -313,7 +358,52 @@ module floating_point_ALU(
 
             INV : 
                  begin
-                
+
+                    sign1 = 0;
+                    sign2 = input1[31];
+        
+                    exp1 = 8'b01111111;
+                    exp2 = input1[30 : 23];
+
+                    mantissa1 = 23'b0;
+                    mantissa2 = input1[22 : 0];
+                    mantissa1[23] = 1;
+                    mantissa2[23] = 1;
+                    
+                    if(input2 == 0) begin
+                        division_by_zero = 1;
+                    end
+                    else begin
+                        if(input1 == 0) begin
+                            result = 0;
+                        end
+                        else begin
+                            sign_res = sign1 ^ sign2;
+                            mantissa_res = 25'b0;
+
+                            if(mantissa1 > mantissa2) begin
+                                
+                                mantissa_res[23] = mantissa1[0];
+                                mantissa1 = mantissa1 >> 1; // ¯\_(ツ)_/¯
+                                exp1 = exp1 + 1;
+                            end
+
+                            exp_res = exp1 - exp2 + 126;
+                           
+
+                            mantissa_res = {mantissa1[23 : 0],mantissa_res[23 : 0]} / mantissa2[23 : 0];
+                        
+                            while(mantissa_res[23] != 1) begin
+                                
+                                mantissa_res = mantissa_res << 1;
+                                exp_res = exp_res - 1;
+                                                    
+                                end 
+
+                            result = {sign_res,exp_res,mantissa_res[22:0]};
+                            
+                        end
+                    end
                  end     
                  
         endcase
