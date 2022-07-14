@@ -2,13 +2,13 @@ module floating_point_ALU(
     input1,
     input2,
     operation,
-    result//,
-//     division_by_zero,
-//     QNaN,
-//     SNaN,
-//     inexact,
-//     underflow,
-//     overflow
+    result,
+    division_by_zero,
+    QNaN,
+    SNaN,
+    inexact,
+    underflow,
+    overflow
 
 );
 
@@ -239,7 +239,38 @@ module floating_point_ALU(
 
             DIV : 
                  begin
-                
+                    if(input2 == 0) begin
+                        division_by_zero = 1;
+                    end
+                    else begin
+                        if(input1 == 0) begin
+                            result = 0;
+                        end
+                        else begin
+                            sign_res = sign1 ^ sign2;
+
+                            if(mantissa1 > mantissa2) begin
+                                mantissa_res = 0;
+                                mantissa_res[23] = mantissa1[0];
+                                mantissa1 = mantissa1 >> 1; // ¯\_(ツ)_/¯
+                                exp1 = exp1 + 1;
+                            end
+
+                            exp_res = exp1 - exp2 + 126;
+
+                            mantissa_res = {mantissa1[23 : 0],mantissa_res[23 : 0]} / mantissa2[23 : 0];
+
+                            while(mantissa_res[23] != 1) begin
+                                
+                                mantissa_res = mantissa_res << 1;
+                                exp_res = exp_res - 1;
+                                                    
+                                end 
+
+                            result = {sign_res,exp_res,mantissa_res[22:0]};
+                            
+                        end
+                    end
                  end
 
             RND : 
