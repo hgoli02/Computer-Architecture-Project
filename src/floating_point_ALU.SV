@@ -27,6 +27,7 @@ module floating_point_ALU(
     reg sign1, sign2, sign_res;
     reg [7 : 0] exp1, exp2, exp_res;
     reg [24 : 0] mantissa1, mantissa2, mantissa_res;
+    reg [49 : 0] mantissa_mul;
 
     always @(input1, input2, operation) begin
         sign1 = input1[31];
@@ -232,11 +233,23 @@ module floating_point_ALU(
                  end
                  end
 
-            MUL : 
-                 begin
-                
-                 end
-
+            MUL : begin
+                    if (input1 == 0 || input2 == 0) begin
+                         result = 0;
+                    end else begin
+                         sign_res = sign1 ^ sign2;
+                         exp_res = exp1 + exp2 - BIAS;
+                         mantissa1[24] = 0;
+                         mantissa2[24] = 0;
+                         mantissa_mul = mantissa1 * mantissa2;
+                         while (mantissa_mul[49 : 46] > 1) begin
+                              mantissa_mul = mantissa_mul >> 1;
+                              exp_res = exp_res + 1;
+                         end
+                         mantissa_res = {1'b1, mantissa_mul[45 : 23]};
+                         result = {sign_res, exp_res, mantissa_res[22 : 0]};
+                    end
+            end
             DIV : 
                  begin
                     if(input2 == 0) begin
