@@ -2,13 +2,13 @@ module floating_point_ALU(
     input1,
     input2,
     operation,
-    result,
-    division_by_zero,
-    QNaN,
-    SNaN,
-    inexact,
-    underflow,
-    overflow
+    result//,
+//     division_by_zero,
+//     QNaN,
+//     SNaN,
+//     inexact,
+//     underflow,
+//     overflow
 
 );
 
@@ -17,14 +17,14 @@ module floating_point_ALU(
 
 
 
-    input input1 [31:0];
-    input input2 [31:0];
-    input operation [2:0];
-    output reg result[31:0];
-    output reg division_by_zero,QNaN,SNaN,inexact,underflow,overflow;
+    input [31:0] input1 ;
+    input [31:0] input2;
+    input  [2:0] operation;
+    output reg [31:0] result;
+    //output reg division_by_zero,QNaN,SNaN,inexact,underflow,overflow;
 
 
-    reg sign1, sing2, sign_res;
+    reg sign1, sign2, sign_res;
     reg [7 : 0] exp1, exp2, exp_res;
     reg [24 : 0] mantissa1, mantissa2, mantissa_res;
 
@@ -76,17 +76,21 @@ module floating_point_ALU(
 
                             if(sign1 ^ sign2) begin
                                     if(sign1) begin
-                                        mantissa_res = mantissa2 - mantissa1;
-                                    end
-                                    else begin
-                                         mantissa_res = mantissa1 - mantissa2;
+                                        mantissa_res = mantissa2[24:0] +{1'b0, -(mantissa1[23:0])};
                                         
                                     end
+                                    else begin
+                                        
+                                         mantissa_res = mantissa1[24:0] + {1'b0,-(mantissa2[23:0])};
+                                   
+                                    end
+                                    
                                       if(mantissa_res[24]) begin
-                                            if(mantissa_res [23 : 0] == 0) begin
+                                            if(mantissa_res [23 : 0] == 24'b0) begin
                                                 sign_res = 0;
                                                 exp_res = 0;
                                                 mantissa_res = 0;
+                                                
                                             end
                                             else begin
                                                 while(mantissa_res[23] != 1) begin
@@ -97,25 +101,27 @@ module floating_point_ALU(
                                             end
                                         end
                                         else begin
+                                            
                                             mantissa_res = -mantissa_res; //whole or just first 24 bits ?
                                             sign_res = 1;
                                             while(mantissa_res[23] != 1) begin
                                                     mantissa_res = mantissa_res << 1;
-                                                    exp_res = exp_res + 1;
+                                                    exp_res = exp_res - 1;
+                                                    
                                                 end 
                                         end
                             end
 
                             else begin
                                  mantissa_res = mantissa1 + mantissa2;
-                                 sign_res = 0;
+                                 sign_res = sign1;
                                  if(mantissa_res[24]) begin
                                     mantissa_res = mantissa_res >> 1;
                                     exp_res = exp_res + 1;
                                  end
                                  else begin
                                     if(mantissa_res[23] == 0) begin
-                                        if(mantissa_res[22:0] != 0) begin
+                                        if(mantissa_res[22:0] != 23'b0) begin
                                             while (mantissa_res[23] != 1) begin
                                                 mantissa_res = mantissa_res << 1;
                                                 exp_res = exp_res - 1;
@@ -126,7 +132,7 @@ module floating_point_ALU(
 
                             end
 
-                            result = {sign_res,exp_res,mantissa_res[22:0]}
+                            result = {sign_res,exp_res,mantissa_res[22:0]};
 
                     end
                     
@@ -135,7 +141,95 @@ module floating_point_ALU(
 
             SUB : 
                  begin
-                
+                    if(input2 == 0) begin
+                        result = input1;
+                    end
+                    
+                    else begin
+                        if(input1 == 0) begin
+                        result = input2;    
+                        end
+
+                        else begin
+                            if(exp1 > exp2) begin
+                            while (exp1 != exp2) begin
+                            exp2 = exp2 + 1;
+                            mantissa2 = mantissa2 >> 1;
+                                end
+                            end
+
+                            if(exp2 > exp1) begin
+                                while (exp1 != exp2) begin
+                            exp1 = exp1 + 1;
+                            mantissa1 = mantissa1 >> 1;
+                                end
+                            end
+
+                            exp_res = exp1;
+
+                            if(!(sign1 ^ sign2)) begin
+                                    if(sign1) begin
+                                        mantissa_res = mantissa2[24:0] + {1'b0, -(mantissa1[23:0])};
+                                        
+                                    end
+                                    else begin
+                                        
+                                         mantissa_res = mantissa1[24:0] + {1'b0,-(mantissa2[23:0])};
+                                   
+                                    end
+                                    
+                                      if(mantissa_res[24]) begin
+                                            if(mantissa_res [23 : 0] == 24'b0) begin
+                                                sign_res = 0;
+                                                exp_res = 0;
+                                                mantissa_res = 0;
+                                                
+                                            end
+                                            else begin
+                                                while(mantissa_res[23] != 1) begin
+                                                    mantissa_res = mantissa_res << 1;
+                                                    exp_res = exp_res - 1;
+                                                end
+                                                sign_res = 0;
+                                            end
+                                        end
+                                        else begin
+                                            
+                                            mantissa_res = -mantissa_res; //whole or just first 24 bits ?
+                                            sign_res = 1;
+                                            while(mantissa_res[23] != 1) begin
+                                                    mantissa_res = mantissa_res << 1;
+                                                    exp_res = exp_res - 1;
+                                                    
+                                                end 
+                                        end
+                            end
+
+                            else begin
+                                 mantissa_res = mantissa1 + mantissa2;
+                                 sign_res = sign1;
+                                 if(mantissa_res[24]) begin
+                                    mantissa_res = mantissa_res >> 1;
+                                    exp_res = exp_res + 1;
+                                 end
+                                 else begin
+                                    if(mantissa_res[23] == 0) begin
+                                        if(mantissa_res[22:0] != 23'b0) begin
+                                            while (mantissa_res[23] != 1) begin
+                                                mantissa_res = mantissa_res << 1;
+                                                exp_res = exp_res - 1;
+                                            end
+                                        end
+                                    end
+                                 end
+
+                            end
+
+                            result = {sign_res,exp_res,mantissa_res[22:0]};
+
+                    end
+                    
+                 end
                  end
 
             MUL : 
