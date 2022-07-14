@@ -21,7 +21,7 @@ module floating_point_ALU(
     input [31:0] input2;
     input  [2:0] operation;
     output reg [31:0] result;
-    //output reg division_by_zero,QNaN,SNaN,inexact,underflow,overflow;
+    output reg division_by_zero,QNaN,SNaN,inexact,underflow,overflow;
 
 
     reg sign1, sign2, sign_res;
@@ -248,18 +248,20 @@ module floating_point_ALU(
                         end
                         else begin
                             sign_res = sign1 ^ sign2;
+                            mantissa_res = 25'b0;
 
                             if(mantissa1 > mantissa2) begin
-                                mantissa_res = 0;
+                                
                                 mantissa_res[23] = mantissa1[0];
                                 mantissa1 = mantissa1 >> 1; // ¯\_(ツ)_/¯
                                 exp1 = exp1 + 1;
                             end
 
                             exp_res = exp1 - exp2 + 126;
+                           
 
                             mantissa_res = {mantissa1[23 : 0],mantissa_res[23 : 0]} / mantissa2[23 : 0];
-
+                        
                             while(mantissa_res[23] != 1) begin
                                 
                                 mantissa_res = mantissa_res << 1;
@@ -318,3 +320,4 @@ module floating_point_ALU(
     end
 
 endmodule
+
