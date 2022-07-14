@@ -13,7 +13,7 @@ module floating_point_ALU(
 );
 
     localparam [3:0] NOP = 4'd0, ADD = 4'd1, SUB = 4'd2, MUL = 4'd3,
-                     DIV = 4'd4 ,RND = 4'd5, CMP = 4'd6, INV = 4'd7;
+                     DIV = 4'd4 ,RND = 4'd5, SLT = 4'd6, INV = 4'd7;
 
 
 
@@ -69,9 +69,35 @@ module floating_point_ALU(
                 
                  end
 
-            CMP : 
+            SLT : 
                  begin
-                
+                    if (sign1 > sign2)
+                         result = 1;
+                    else if (sign1 < sign2)
+                         result = 0;
+                    else if (sign1 == 0) begin
+                         if (exp1 < exp2)
+                              result = 1;
+                         else if (exp1 > exp2)
+                              result = 0;
+                         else begin
+                              if (mantissa1 < mantissa2)
+                                   result = 1;
+                              else 
+                                   result = 0;
+                         end
+                    end else begin
+                         if (exp1 > exp2) 
+                              result = 1;
+                         else if (exp1 < exp2)
+                              result = 0;
+                         else begin
+                              if (mantissa1 > mantissa2)
+                                   result = 1;
+                              else 
+                                   result = 0;
+                         end
+                    end
                  end
 
             INV : 
