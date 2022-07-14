@@ -26,7 +26,7 @@ module floating_point_ALU(
 
     reg sign1, sing2, sign_res;
     reg [7 : 0] exp1, exp2, exp_res;
-    reg [22 : 0] mantissa1, mantissa2, mantissa_res;
+    reg [24 : 0] mantissa1, mantissa2, mantissa_res;
 
     always @(input1, input2, operation) begin
         sign1 = input1[31];
@@ -37,6 +37,8 @@ module floating_point_ALU(
 
         mantissa1 = input1[22 : 0];
         mantissa2 = input2[22 : 0];
+        mantissa1[23] = 1;
+        mantissa2[23] = 1;
 
         case(operation)
             NOP : 
@@ -46,7 +48,108 @@ module floating_point_ALU(
 
             ADD : 
                  begin
-                
+                    if(input2 == 0) begin
+                        result = input1;
+                    end
+                    
+                    else begin
+                        if(input1 == 0) begin
+                        result = input2;    
+                        end
+
+                        else begin
+                            if(exp1 > exp2) begin
+                            while (exp1 != exp2) begin
+                            exp2 = exp2 + 1;
+                            mantissa2 = mantissa2 >> 1;
+                                end
+                            end
+
+                            if(exp2 > exp1) begin
+                                while (exp1 != exp2) begin
+                            exp1 = exp1 + 1;
+                            mantissa1 = mantissa1 >> 1;
+                                end
+                            end
+
+                            exp_res = exp1;
+
+                            if(sign1 ^ sign2) begin
+                                    if(sign1) begin
+                                        mantissa_res = mantissa2 - mantissa1;
+                                        if(mantissa_res[24]) begin
+                                            if(mantissa_res [23 : 0] == 0) begin
+                                                sign_res = 0;
+                                                exp_res = 0;
+                                                mantissa_res = 0;
+                                            end
+                                            else begin
+                                                while(mantissa_res[23] != 1) begin
+                                                    mantissa_res = mantissa_res << 1;
+                                                    exp_res = exp_res + 1;
+                                                end
+                                                sign_res = 0;
+                                            end
+                                        end
+                                        else begin
+                                            mantissa_res = -mantissa_res; //whole or just first 24 bits ?
+                                            sign_res = 1;
+                                            while(mantissa_res[23] != 1) begin
+                                                    mantissa_res = mantissa_res << 1;
+                                                    exp_res = exp_res + 1;
+                                                end 
+                                        end
+                                    end
+                                    else begin
+                                         mantissa_res = mantissa2 - mantissa1;
+                                        if(mantissa_res[24]) begin
+                                            if(mantissa_res [23 : 0] == 0) begin
+                                                sign_res = 0;
+                                                exp_res = 0;
+                                                mantissa_res = 0;
+                                            end
+                                            else begin
+                                                while(mantissa_res[23] != 1) begin
+                                                    mantissa_res = mantissa_res << 1;
+                                                    exp_res = exp_res + 1;
+                                                end
+                                            end
+                                        end
+                                        else begin
+                                            mantissa_res = -mantissa_res;
+                                            sign_res = -sign1;
+                                            while(mantissa_res[23] != 1) begin
+                                                    mantissa_res = mantissa_res << 1;
+                                                    exp_res = exp_res + 1;
+                                                end 
+                                        end
+                                    end
+                            end
+
+                            else begin
+                                 mantissa_res = mantissa1 + mantissa2;
+                                 if(mantissa_res[24]) begin
+                                    mantissa_res = mantissa_res >> 1;
+                                    exp_res = exp_res + 1;
+                                 end
+                                 else begin
+                                    if(mantissa_res[23] == 0) begin
+                                        if(mantissa_res[22:0] != 0) begin
+                                            while (mantissa_res[23] != 1) begin
+                                                mantissa_res = mantissa_res << 1;
+                                                exp_res = exp_res - 1;
+                                            end
+                                        end
+                                    end
+                                 end
+
+                            end
+
+                            result = {sign_res,exp_res,mantissa_res[22:0]}
+
+                    end
+                    
+                 end
                  end
 
             SUB : 
