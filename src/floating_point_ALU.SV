@@ -12,15 +12,14 @@ module floating_point_ALU(
 
 );
 
-    localparam [3:0] NOP = 4'd0, ADD = 4'd1, SUB = 4'd2, MUL = 4'd3,
-                     DIV = 4'd4 ,RND = 4'd5, SLT = 4'd6, INV = 4'd7,
-                     BIAS = 8'd127;
+    localparam [4:0] NOP = 5'd15, ADD = 5'd16, SUB = 5'd17, MUL = 5'd18,
+                     DIV = 5'd19 ,RND = 5'd20, SLT = 5'd21, INV = 5'd22;
 
 
 
     input [31:0] input1 ;
     input [31:0] input2;
-    input  [2:0] operation;
+    input  [4:0] operation;
     output reg [31:0] result;
     output reg division_by_zero,QNaN,SNaN,inexact,underflow,overflow;
 
@@ -28,17 +27,18 @@ module floating_point_ALU(
     reg sign1, sign2, sign_res;
     reg [7 : 0] exp1, exp2, exp_res;
     reg [24 : 0] mantissa1, mantissa2, mantissa_res;
+    reg [22 : 0] dummy;
     reg [47 : 0] mantissa_mul;
 
-    always @(input1, input2, operation) begin
+    always_latch @(input1, input2, operation) begin
         sign1 = input1[31];
         sign2 = input2[31];
         
         exp1 = input1[30 : 23];
         exp2 = input2[30 : 23];
 
-        mantissa1 = input1[22 : 0];
-        mantissa2 = input2[22 : 0];
+        mantissa1 = {2'b00, input1[22 : 0]};
+        mantissa2 = {2'b00, input2[22 : 0]};
         mantissa1[23] = 1;
         mantissa2[23] = 1;
 
@@ -83,7 +83,7 @@ module floating_point_ALU(
                                     end
                                     else begin
                                         
-                                         mantissa_res = mantissa1[24:0] + {1'b0,-(mantissa2[23:0])};
+                                        mantissa_res = mantissa1[24:0] + {1'b0,-(mantissa2[23:0])};
                                    
                                     end
                                     
@@ -243,7 +243,7 @@ module floating_point_ALU(
                          mantissa1[24] = 0;
                          mantissa2[24] = 0;
                          mantissa_mul = mantissa1[23 : 0] * mantissa2 [23 : 0];
-                         mantissa_res = mantissa_mul[46 : 24];
+                         mantissa_res = {2'b00, mantissa_mul[46 : 24]};
                          result = {sign_res, exp_res, mantissa_res[22 : 0]};
                     end
             end
@@ -270,7 +270,7 @@ module floating_point_ALU(
                             exp_res = exp1 - exp2 + 126;
                            
 
-                            mantissa_res = {mantissa1[23 : 0],mantissa_res[23 : 0]} / mantissa2[23 : 0];
+                            {dummy, mantissa_res} = ({mantissa1[23 : 0],mantissa_res[23 : 0]} / {24'd0, mantissa2[23 : 0]});
                         
                             while(mantissa_res[23] != 1) begin
                                 
@@ -375,8 +375,8 @@ module floating_point_ALU(
                     exp1 = 8'b01111111;
                     exp2 = input1[30 : 23];
 
-                    mantissa1 = 23'b0;
-                    mantissa2 = input1[22 : 0];
+                    mantissa1 = 25'd0;
+                    mantissa2 = {2'b00, input1[22 : 0]};
                     mantissa1[23] = 1;
                     mantissa2[23] = 1;
                     
@@ -401,7 +401,7 @@ module floating_point_ALU(
                             exp_res = exp1 - exp2 + 126;
                            
 
-                            mantissa_res = {mantissa1[23 : 0],mantissa_res[23 : 0]} / mantissa2[23 : 0];
+                            {dummy, mantissa_res} = {mantissa1[23 : 0],mantissa_res[23 : 0]} / {24'b0, mantissa2[23 : 0]};
                         
                             while(mantissa_res[23] != 1) begin
                                 
@@ -415,7 +415,7 @@ module floating_point_ALU(
                         end
                     end
                  end     
-                 
+            default: begin end
         endcase
     end
 
