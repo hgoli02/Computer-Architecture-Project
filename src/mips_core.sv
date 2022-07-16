@@ -44,7 +44,7 @@ module mips_core(
     wire [31:0] inst_ID;
     wire [31:0] inst_MEM;
     wire [31:0] inst_EX;
-
+    wire float_reg_write_enable;
 
     data_path DataPath(
         .inst(inst),
@@ -75,7 +75,8 @@ module mips_core(
         .inst_ID(inst_ID),
         .inst_MEM(inst_MEM),
         .inst_EX(inst_EX),
-        .should_branch(should_branch)
+        .should_branch(should_branch),
+        .float_reg_write_enable(float_reg_write_enable)
     );
 
     control_unit ControlUnit(
@@ -100,7 +101,8 @@ module mips_core(
         .pc_we(pc_we),
         .hit(hit),
         .should_branch(should_branch),
-        .stall(stall)
+        .stall(stall),
+        .float_reg_write_enable(float_reg_write_enable)
     );
 
     wire [7:0] data_out_datapath[0:3];

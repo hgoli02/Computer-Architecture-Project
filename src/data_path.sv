@@ -1,7 +1,9 @@
 module data_path (
     inst,inst_addr , reg_dest, reg_write_enable, alu_src, alu_operation, mem_addr, mem_data_in,mem_data_out,
     mem_or_reg,clk,halted,rst_b,branch,jump,jump_register,pc_or_mem,does_shift_amount_need,zero,negative,
-    is_unsigned,pc_we,flush,stall,reg_write_enable_cache,inst_ID, inst_MEM, inst_EX, should_branch);
+    is_unsigned,pc_we,flush,stall,reg_write_enable_cache,inst_ID, inst_MEM, inst_EX, should_branch,float_reg_write_enable,regfile_mux,
+    fp_regfile_mux);
+
  localparam [5:0] RTYPE = 6'b000000, ADDIU = 6'b001001, ADDi = 6'b001000,
         SYSCALL = 6'b001100, ADD = 6'b100000 , BEQ = 6'b000100,BGTZ = 6'b000111,
         BNE = 6'b000101 , JUMP = 6'b000010,BLEZ = 6'b000110,BGEZ = 6'b000001,
@@ -25,9 +27,10 @@ input stall;
 assign {mem_data_in[3], mem_data_in[2], mem_data_in[1],mem_data_in[0]} = memory_in;      //TODO check indexes (!!!!)
 assign memory_out_MEM = {mem_data_out[3], mem_data_out[2], mem_data_out[1],mem_data_out[0]};
 
-
-
-input [3:0] alu_operation;
+input regfile_mux;
+input fp_regfile_mux;
+input float_reg_write_enable;
+input [4:0] alu_operation;
 input pc_we;
 input reg_dest; // R type and I type Mux from control unit
 input reg_write_enable; // register file write enable from control unit 
@@ -45,6 +48,10 @@ output negative;
 output [31:0] inst_ID;
 output [31:0] inst_MEM;
 output [31:0] inst_EX;
+
+wire float_reg_write_enable_EX, float_reg_write_enable_MEM;
+wire regfile_mux_EX, regfile_mux_MEM;
+
 
 //IF
 wire[XLEN - 1 : 0 ] pc_incremented_IF;
@@ -84,10 +91,12 @@ wire [31:0] pc_jump_address_ID;
 wire [31:0] pc_incremented_ID;
 wire [31:0] rs_data_ID;
 wire [31:0] rt_data_ID;
+wire [31:0] fs_data_ID;
+wire [31:0] ft_data_ID;
 wire [31:0] shift_amount_32bit_ID;
 wire [31:0] shifted_first16bit_extended_inst_ID;
 wire [31:0] immediate_data_ID;
-wire [3:0] alu_operation_ID = alu_operation;
+wire [4:0] alu_operation_ID = alu_operation;
 wire [4:0] rd_num_ID;
 wire [5:0] opcode_ID = inst_ID[31:26];
 wire [XLEN -1 : 0] sign_extended_first16bit_inst;
@@ -117,6 +126,23 @@ regfile RegisterFile(
         .rst_b(rst_b),
         .halted(halted)
 );
+
+regfile RegisterFile_Float(
+        .rs_data(fs_data_ID),
+        .rt_data(ft_data_ID),
+        .rs_num(inst_ID[25:21]),
+        .rt_num(inst_ID[20:16]),
+        .rd_num(rd_num_WB),
+        .rd_data(fd_data),
+        .rd_we(float_reg_write_enable_WB),
+        .clk(clk),
+        .rst_b(rst_b),
+        .halted(halted)
+);
+
+
+
+
 buff_ID_EX buff_idex(
     .should_branch_ID(should_branch_ID),
     .reg_dest_ID(reg_dest_ID),
@@ -163,11 +189,22 @@ buff_ID_EX buff_idex(
     .clk(clk),
     .rst_b(rst_b),
     .flush(flush),
-    .stall(stall));
+    .stall(stall),
+    .float_reg_write_enable_ID(float_reg_write_enable),
+    .float_reg_write_enable_EX(float_reg_write_enable_EX),
+    .fp_regfile_mux_ID(fp_regfile_mux),
+    .fp_regfile_mux_EX(fp_regfile_mux_EX),
+    .regfile_mux_ID(regfile_mux),
+    .regfile_mux_EX(regfile_mux_EX),
+    .fs_data_ID(fs_data_ID),
+    .fs_data_EX(fs_data_EX),
+    .ft_data_ID(ft_data_ID),
+    .ft_data_EX(ft_data_EX)
+    );
 
 
 //EX
-
+wire fp_regfile_mux_EX;
 wire reg_dest_EX;
 wire reg_write_enable_EX;
 wire alu_src_EX;
@@ -186,11 +223,14 @@ wire [31:0] shift_amount_32bit_EX;
 wire [31:0] shifted_first16bit_extended_inst_EX;
 wire [31:0] immediate_data_EX;
 wire [31:0] inst_EX;
-wire [3:0] alu_operation_EX;
+wire [4:0] alu_operation_EX;
 wire [4:0] rd_num_EX;
 wire [5:0] opcode_EX;
+wire [31:0] fs_data_EX;
+wire [31:0] ft_data_EX;
 wire zero_EX;
 wire negative_EX;
+wire [31 : 0 ]fp_alu_result_EX;
 
 wire [XLEN - 1:0] alu_second_source, alu_first_source, alu_result_EX;
 wire[XLEN -1 : 0 ] pc_branch_value_EX;
@@ -198,6 +238,8 @@ Mux alu_input2_mux(.select(alu_src_EX),.in0(rt_data_EX),.in1(immediate_data_EX),
 Mux select_shift_amount_mux(.select(does_shift_amount_need_EX),.in0(rs_data_EX),.in1(shift_amount_32bit_EX),.out(alu_first_source));
 ALU alu(.input1(alu_first_source), .input2(alu_second_source), .out(alu_result_EX), .zero(zero_EX),.negative(negative_EX),.alu_operation(alu_operation_EX));
 Adder pc_branch(pc_incremented_EX,shifted_first16bit_extended_inst_EX,pc_branch_value_EX);
+
+floating_point_ALU fp_alu(.input1(fs_data_EX),.input2(ft_data_EX),.operation(alu_operation_EX),.result(fp_alu_result_EX),.division_by_zero(),.QNaN(),.SNaN(),.inexact(),.underflow(),.overflow());
 
 buff_EX_MEM buff_exmem(
     .should_branch_EX(should_branch_EX),
@@ -241,11 +283,22 @@ buff_EX_MEM buff_exmem(
     .alu_result_MEM(alu_result_MEM),
     .rd_num_MEM(rd_num_MEM),
     .opcode_MEM(opcode_MEM),
-    .should_branch_MEM(should_branch_MEM)
+    .should_branch_MEM(should_branch_MEM),
+    .float_reg_write_enable_EX(float_reg_write_enable_EX),
+    .float_reg_write_enable_MEM(float_reg_write_enable_MEM),
+    .fp_regfile_mux_MEM(fp_regfile_mux_MEM),
+    .fp_regfile_mux_EX(fp_regfile_mux_EX),
+    .regfile_mux_MEM(regfile_mux_MEM),
+    .regfile_mux_EX(regfile_mux_EX),
+    .fs_data_MEM(fs_data_MEM),
+    .fs_data_EX(fs_data_EX),
+    .fp_alu_result_EX(fp_alu_result_EX),
+    .fp_alu_result_MEM(fp_alu_result_MEM)
 );
 
 
 //MEM
+wire fp_regfile_mux_MEM;
 wire reg_dest_MEM;
 wire reg_write_enable_MEM;
 wire mem_or_reg_MEM;
@@ -265,6 +318,8 @@ wire [31:0] rt_data_MEM;
 wire [31:0] alu_result_MEM;
 wire [4:0] rd_num_MEM;
 wire [5:0] opcode_MEM;
+wire [31:0] fs_data_MEM;
+wire [31 : 0 ]fp_alu_result_MEM;
 
 wire reg_write_enable_MEM2 = reg_write_enable_MEM | reg_write_enable_cache;
 
@@ -314,7 +369,19 @@ buff_MEM_WB buff_memwb(
     .reg_dest_WB(reg_dest_WB),
     .reg_write_enable_WB(reg_write_enable_WB),
     .mem_or_reg_WB(mem_or_reg_WB),
-    .pc_or_mem_WB(pc_or_mem_WB)
+    .pc_or_mem_WB(pc_or_mem_WB),
+    .float_reg_write_enable_MEM(float_reg_write_enable_MEM),
+    .float_reg_write_enable_WB(float_reg_write_enable_WB),
+    .rt_data_WB(rt_data_WB),
+    .rt_data_MEM(rt_data_MEM),
+    .fp_regfile_mux_MEM(fp_regfile_mux_MEM),
+    .fp_regfile_mux_WB(fp_regfile_mux_WB),
+    .regfile_mux_MEM(regfile_mux_MEM),
+    .regfile_mux_WB(regfile_mux_WB),
+    .fs_data_MEM(fs_data_MEM),
+    .fs_data_WB(fs_data_WB),
+    .fp_alu_result_MEM(fp_alu_result_MEM),
+    .fp_alu_result_WB(fp_alu_result_WB)
 );
 
 
@@ -326,13 +393,27 @@ wire [4:0] rd_num_WB;
 wire [5:0] opcode_WB;
 wire reg_dest_WB;
 wire reg_write_enable_WB;
+wire float_reg_write_enable_WB;
 wire mem_or_reg_WB;
 wire pc_or_mem_WB;
-
+wire fp_regfile_mux_WB;
+wire [31 : 0] rt_data_WB, fp_alu_WB;
+wire [31 : 0 ]fp_alu_result_WB;
 wire [XLEN -1 : 0] mem_or_alu_write_data;
 wire [XLEN -1 : 0]rd_data;
+wire [XLEN -1 : 0]fd_data;
+wire [XLEN -1 : 0]fs_data_WB;
+wire [XLEN -1 : 0]memoralu_or_pc_incremented_mux_out;
+wire [31:0] fs_data_WB;
+wire regfile_mux_WB;
+
 Mux mem_or_alu_result_mux(.select(mem_or_reg_WB),.in0(alu_result_WB),.in1(memory_out_WB),.out(mem_or_alu_write_data));
-Mux memoralu_or_pc_incremented_mux(.select(pc_or_mem_WB),.in0(mem_or_alu_write_data),.in1(pc_incremented_WB),.out(rd_data));
+
+Mux memoralu_or_pc_incremented_mux(.select(pc_or_mem_WB),.in0(mem_or_alu_write_data),.in1(pc_incremented_WB),.out(memoralu_or_pc_incremented_mux_out));
+
+Mux fp_reg_mux(.select(fp_regfile_mux_WB),.in0(rt_data_WB),.in1(fp_alu_result_WB),.out(fd_data));
+
+Mux reg_mux(.select(regfile_mux_WB),.in0(memoralu_or_pc_incremented_mux_out),.in1(fs_data_WB),.out(rd_data));
 
 
 // integer x;

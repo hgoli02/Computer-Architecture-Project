@@ -1,13 +1,14 @@
 module ALU_CONTROLLER(alu_operation, opcode, func);
 
-    output reg[3:0] alu_operation;
+    output reg[4:0] alu_operation;
     input [5:0] opcode;
     input [5:0] func;
 
-    localparam [3:0] NOP = 4'd0, XOR = 4'd1, OR = 4'd2, AND = 4'd3,
-                     NOR = 4'd4 ,SLL = 4'd5, SRL = 4'd6, SLT = 4'd7, ADD = 4'd8,
-                     ADDU = 4'd9, SUB = 4'd10, SUBU = 4'd11, MULT = 4'd12, DIV = 4'd13,
-                     LUI = 4'd15 ,SRA = 4'd14;
+    localparam [4:0] NOP = 5'd0, XOR = 5'd1, OR = 5'd2, AND = 5'd3,
+                     NOR = 5'd4 ,SLL = 5'd5, SRL = 5'd6, SLT = 5'd7, ADD = 5'd8,
+                     ADDU = 5'd9, SUB = 5'd10, SUBU = 5'd11, MULT = 5'd12, DIV = 5'd13,
+                     LUI = 5'd15 ,SRA = 5'd14, ADD_S = 5'd45, SUB_S = 5'd46, MUL_S = 5'd47,
+                     DIV_S = 5'd48, INV_S = 5'd49, RND_S = 5'd50, NOP_S = 5'd51;
 
     always @(opcode, func) begin
         
@@ -31,6 +32,13 @@ module ALU_CONTROLLER(alu_operation, opcode, func);
                     6'b011010 : alu_operation = DIV; //div
                     6'b100100 : alu_operation = AND; //AND
                     6'b100000 : alu_operation = ADD; //add
+                    6'd45 : alu_operation = ADD_S;
+                    6'd46 : alu_operation = SUB_S;
+                    6'd47 : alu_operation = MUL_S;
+                    6'd48 : alu_operation = DIV_S;
+                    6'd49 : alu_operation = INV_S;
+                    6'd50 : alu_operation = RND_S;
+                    6'd51 : alu_operation = NOP_S; 
                     default : alu_operation = NOP;
                 endcase
             end

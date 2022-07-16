@@ -17,7 +17,7 @@ module floating_point_ALU(
 
 
 
-    input [31:0] input1 ;
+    input [31:0] input1;
     input [31:0] input2;
     input  [4:0] operation;
     output reg [31:0] result;
@@ -426,4 +426,3 @@ module floating_point_ALU(
     end
 
 endmodule
-

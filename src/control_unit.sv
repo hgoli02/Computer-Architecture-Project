@@ -1,7 +1,9 @@
 module control_unit (
     inst_ID, inst_MEM, inst_EX, halted, alu_src, reg_dest, pc_or_mem, mem_or_reg, branch, jump_register,jump,
-    reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned,pc_we,hit,should_branch,stall//,is_byte
+    reg_write_enable, does_shift_amount_need, alu_operation,mem_write_en,zero,negative,is_unsigned,pc_we,hit,should_branch,stall,float_reg_write_enable,regfile_mux,
+    fp_regfile_mux//,is_byte
 );
+    output reg float_reg_write_enable;
     output reg halted;
     output reg alu_src;
     output reg reg_dest;
@@ -16,8 +18,11 @@ module control_unit (
     output reg mem_write_en;
     output reg pc_we;
     // output reg is_byte;
-    output [3:0] alu_operation;
+    output [4:0] alu_operation;
     output reg should_branch;
+    output reg fp_regfile_mux;
+    output reg regfile_mux;
+
     wire is_mem_inst;
 
     input [31:0] inst_ID;

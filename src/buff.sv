@@ -30,6 +30,7 @@ module buff_ID_EX(
     input [3:0] alu_operation_ID,
     input [4:0] rd_num_ID,
     input [5:0] opcode_ID,
+    input float_reg_write_enable_ID,
 
     input clk, rst_b, flush, stall,
 
@@ -53,7 +54,18 @@ module buff_ID_EX(
     output [31:0] inst_EX,
     output [3:0] alu_operation_EX,
     output [4:0] rd_num_EX,
-    output [5:0] opcode_EX);
+    output [5:0] opcode_EX
+    output float_reg_write_enable_EX,
+
+
+    input fp_regfile_mux_ID,
+    input regfile_mux_ID,
+    input [31:0] fs_data_ID,
+    input [31:0] ft_data_ID,
+    output regfile_mux_EX
+    output fp_regfile_mux_EX
+    output [31:0] fs_data_EX
+    output [31:0] ft_data_EX);
 
 
     Register #(1) should_branch_reg(.clk(clk),.rst_b(rst_b),.data_in(should_branch_ID),.data_out(should_branch_EX),.we(~stall));
@@ -66,6 +78,12 @@ module buff_ID_EX(
     Register #(1) jump_register_reg(.clk(clk),.rst_b(rst_b),.data_in(jump_register_ID),.data_out(jump_register_EX),.we(~stall));
     Register #(1) does_shift_amount_need_reg(.clk(clk),.rst_b(rst_b),.data_in(does_shift_amount_need_ID),.data_out(does_shift_amount_need_EX),.we(~stall));
     Register #(1) is_unsigned_reg(.clk(clk),.rst_b(rst_b),.data_in(is_unsigned_ID),.data_out(is_unsigned_EX),.we(~stall));
+    Register #(1) float_reg_write_enable(.clk(clk),.rst_b(rst_b),.data_in(float_reg_write_enable_ID),.data_out(float_reg_write_enable_EX),.we(~stall));
+    Register #(1) fp_reg_file_mux(.clk(clk),.rst_b(rst_b),.data_in(fp_regfile_mux_ID),.data_out(fp_regfile_mux_EX),.we(~stall));
+    Register #(1) regfile_mux(.clk(clk),.rst_b(rst_b),.data_in(regfile_mux_ID),.data_out(regfile_mux_EX),.we(~stall));
+
+    Register #(32) fs_data(.clk(clk),.rst_b(rst_b),.data_in(fs_data_ID),.data_out(fs_data_EX),.we(~stall));
+    Register #(32) ft_data(.clk(clk),.rst_b(rst_b),.data_in(ft_data_ID),.data_out(ft_data_EX),.we(~stall));
 
 
     Register inst_reg(.clk(clk),.rst_b(rst_b),.data_in(inst_ID),.data_out(inst_EX),.we(~stall));
@@ -104,6 +122,7 @@ module buff_EX_MEM(
     input [31:0] alu_result_EX,
     input [4:0] rd_num_EX,
     input [5:0] opcode_EX,
+    input float_reg_write_enable_EX,
 
     input clk, rst_b, flush, stall,
 
@@ -125,7 +144,20 @@ module buff_EX_MEM(
     output [31:0] rt_data_MEM,
     output [31:0] alu_result_MEM,
     output [4:0]  rd_num_MEM,
-    output [5:0]  opcode_MEM);
+    output [5:0]  opcode_MEM,
+    output float_reg_write_enable_MEM,
+
+    output fp_regfile_mux_MEM,
+    output regfile_mux_MEM,
+    output [31 : 0] fs_data_MEM,
+    output [31 : 0] fp_alu_result_MEM,
+
+    input fp_regfile_mux_EX,
+    input regfile_mux_EX,
+    input [31 : 0] fs_data_EX,
+    input [31 : 0] fp_alu_result_EX
+    
+    );
 
 
     Register #(1) should_branch_reg(.clk(clk),.rst_b(rst_b),.data_in(should_branch_EX),.data_out(should_branch_MEM),.we(~stall));
@@ -138,10 +170,15 @@ module buff_EX_MEM(
     Register #(1) is_unsigned_reg(.clk(clk),.rst_b(rst_b),.data_in(is_unsigned_EX),.data_out(is_unsigned_MEM),.we(~stall));
     Register #(1) zero_reg(.clk(clk),.rst_b(rst_b),.data_in(zero_EX),.data_out(zero_MEM),.we(~stall));
     Register #(1) negative_reg(.clk(clk),.rst_b(rst_b),.data_in(negative_EX),.data_out(negative_MEM),.we(~stall));
+    Register #(1) float_reg_write_enable(.clk(clk),.rst_b(rst_b),.data_in(float_reg_write_enable_EX),.data_out(float_reg_write_enable_MEM),.we(~stall));
+    Register #(1) fp_reg_mux(.clk(clk),.rst_b(rst_b),.data_in(fp_regfile_mux_EX),.data_out(fp_regfile_mux_MEM),.we(~stall));
+    Register #(1) reg_mux(.clk(clk),.rst_b(rst_b),.data_in(regfile_mux_EX),.data_out(regfile_mux_MEM),.we(~stall));
+
     
+    Register #(32) fs_data(.clk(clk),.rst_b(rst_b),.data_in(fs_data_EX),.data_out(fs_data_MEM),.we(~stall));
+    Register #(32) fp_alu(.clk(clk),.rst_b(rst_b),.data_in(fp_alu_result_EX),.data_out(fp_alu_result_MEM),.we(~stall));
 
 
-    
     Register inst_reg(.clk(clk),.rst_b(rst_b),.data_in(inst_EX),.data_out(inst_MEM),.we(~stall));
     Register pc_jump_address_reg(.clk(clk),.rst_b(rst_b),.data_in(pc_jump_address_EX),.data_out(pc_jump_address_MEM),.we(~stall));
     Register pc_incremented_reg(.clk(clk),.rst_b(rst_b),.data_in(pc_incremented_EX),.data_out(pc_incremented_MEM),.we(~stall));
@@ -171,7 +208,7 @@ module buff_MEM_WB(
     input rst_b,
     input flush,
     input stall,
-    
+    input float_reg_write_enable_MEM,
 
     output [31:0] memory_out_WB,
     output [31:0] alu_result_WB,
@@ -181,12 +218,34 @@ module buff_MEM_WB(
     output reg_dest_WB,
     output reg_write_enable_WB,
     output mem_or_reg_WB,
-    output pc_or_mem_WB);
+    output pc_or_mem_WB,
+    output float_reg_write_enable_WB,
+    
+    input [31 : 0] rt_data_MEM,
+    input fp_regfile_mux_MEM,
+    input regfile_mux_MEM,
+    input [31 : 0] fs_data_MEM,
+    input [31 : 0] fp_alu_result_MEM,
+    
+    output fp_regfile_mux_WB,
+    output regfile_mux_WB,
+    output [31 : 0] fs_data_WB,
+    output [31 : 0] rt_data_WB,
+    output [31 : 0] fp_alu_result_WB);
 
     Register #(1) reg_dest_reg(.clk(clk),.rst_b(rst_b),.data_in(reg_dest_MEM),.data_out(reg_dest_WB),.we(~stall));
     Register #(1) reg_write_enable_reg(.clk(clk),.rst_b(rst_b),.data_in(reg_write_enable_MEM),.data_out(reg_write_enable_WB),.we(~stall));
     Register #(1) mem_or_reg_reg(.clk(clk),.rst_b(rst_b),.data_in(mem_or_reg_MEM),.data_out(mem_or_reg_WB),.we(~stall));
     Register #(1) pc_or_mem_reg(.clk(clk),.rst_b(rst_b),.data_in(pc_or_mem_MEM),.data_out(pc_or_mem_WB),.we(~stall));
+    Register #(1) float_reg_write_enable(.clk(clk),.rst_b(rst_b),.data_in(float_reg_write_enable_MEM),.data_out(float_reg_write_enable_WB),.we(~stall));
+    Register #(1) fp_reg_mux(.clk(clk),.rst_b(rst_b),.data_in(fp_regfile_mux_MEM),.data_out(fp_regfile_mux_WB),.we(~stall));
+    Register #(1) reg_mux(.clk(clk),.rst_b(rst_b),.data_in(regfile_mux_MEM),.data_out(regfile_mux_WB),.we(~stall));
+
+
+    Register #(32) fs_data(.clk(clk),.rst_b(rst_b),.data_in(fs_data_MEM),.data_out(fs_data_WB),.we(~stall));
+    Register #(32) rt_data(.clk(clk),.rst_b(rst_b),.data_in(rt_data_MEM),.data_out(rt_data_WB),.we(~stall));
+    Register #(32) fp_alu_result(.clk(clk),.rst_b(rst_b),.data_in(fp_alu_result_MEM),.data_out(fp_alu_result_WB),.we(~stall));
+
 
     Register memory_out_reg(.clk(clk),.rst_b(rst_b),.data_in(memory_out_MEM),.data_out(memory_out_WB),.we(~stall));
     Register alu_result_reg(.clk(clk),.rst_b(rst_b),.data_in(alu_result_MEM),.data_out(alu_result_WB),.we(~stall));
