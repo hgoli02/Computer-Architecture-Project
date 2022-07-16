@@ -12,8 +12,8 @@ module floating_point_ALU(
 
 );
 
-    localparam [4:0] NOP = 5'd15, ADD = 5'd16, SUB = 5'd17, MUL = 5'd18,
-                     DIV = 5'd19 ,RND = 5'd20, SLT = 5'd21, INV = 5'd22;
+    localparam [4:0] ADD = 5'd16, SUB = 5'd17, MUL = 5'd18, DIV = 5'd19,
+     INV = 5'd20, RND = 5'd21, NOP = 5'd22, SLT = 5'd23;
 
 
 

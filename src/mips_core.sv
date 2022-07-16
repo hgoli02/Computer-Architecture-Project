@@ -22,7 +22,7 @@ module mips_core(
 
     wire mem_or_reg;
     wire alu_src;
-    wire [3:0] alu_operation;
+    wire [4:0] alu_operation;
     wire reg_write_enable;
     wire reg_dest;
     wire branch;
@@ -45,8 +45,12 @@ module mips_core(
     wire [31:0] inst_MEM;
     wire [31:0] inst_EX;
     wire float_reg_write_enable;
+    wire regfile_mux;
+    wire fp_regfile_mux;
 
     data_path DataPath(
+        .regfile_mux(regfile_mux),
+        .fp_regfile_mux(fp_regfile_mux),
         .inst(inst),
         .inst_addr(inst_addr),
         .mem_addr(datapath_mem_addr), 
@@ -80,6 +84,8 @@ module mips_core(
     );
 
     control_unit ControlUnit(
+        .regfile_mux(regfile_mux),
+        .fp_regfile_mux(fp_regfile_mux),
         .halted(halted),
         .inst_ID(inst_ID),
         .inst_MEM(inst_MEM),

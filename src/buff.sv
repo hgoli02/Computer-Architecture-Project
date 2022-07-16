@@ -27,7 +27,7 @@ module buff_ID_EX(
     input [31:0] shift_amount_32bit_ID,
     input [31:0] shifted_first16bit_extended_inst_ID,
     input [31:0] immediate_data_ID,
-    input [3:0] alu_operation_ID,
+    input [4:0] alu_operation_ID,
     input [4:0] rd_num_ID,
     input [5:0] opcode_ID,
     input float_reg_write_enable_ID,
@@ -52,9 +52,9 @@ module buff_ID_EX(
     output [31:0] shifted_first16bit_extended_inst_EX,
     output [31:0] immediate_data_EX,
     output [31:0] inst_EX,
-    output [3:0] alu_operation_EX,
+    output [4:0] alu_operation_EX,
     output [4:0] rd_num_EX,
-    output [5:0] opcode_EX
+    output [5:0] opcode_EX,
     output float_reg_write_enable_EX,
 
 
@@ -62,9 +62,9 @@ module buff_ID_EX(
     input regfile_mux_ID,
     input [31:0] fs_data_ID,
     input [31:0] ft_data_ID,
-    output regfile_mux_EX
-    output fp_regfile_mux_EX
-    output [31:0] fs_data_EX
+    output regfile_mux_EX,
+    output fp_regfile_mux_EX,
+    output [31:0] fs_data_EX,
     output [31:0] ft_data_EX);
 
 
@@ -95,7 +95,7 @@ module buff_ID_EX(
     Register shifted_first16bit_extended_inst_reg(.clk(clk),.rst_b(rst_b),.data_in(shifted_first16bit_extended_inst_ID),.data_out(shifted_first16bit_extended_inst_EX),.we(~stall));
     Register immediate_data_reg(.clk(clk),.rst_b(rst_b),.data_in(immediate_data_ID),.data_out(immediate_data_EX),.we(~stall));
     
-    Register #(4) alu_operation_reg(.clk(clk),.rst_b(rst_b),.data_in(alu_operation_ID),.data_out(alu_operation_EX),.we(~stall));
+    Register #(5) alu_operation_reg(.clk(clk),.rst_b(rst_b),.data_in(alu_operation_ID),.data_out(alu_operation_EX),.we(~stall));
     Register #(5) rd_num_reg(.clk(clk),.rst_b(rst_b),.data_in(rd_num_ID),.data_out(rd_num_EX),.we(~stall));
     Register #(6) opcode_reg(.clk(clk),.rst_b(rst_b),.data_in(opcode_ID),.data_out(opcode_EX),.we(~stall));
     
