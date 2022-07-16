@@ -235,7 +235,7 @@ module floating_point_ALU(
                  end
 
             MUL : begin
-                    if (input1 == 0 || input2 == 0) begin
+                      if (input1 == 0 || input2 == 0) begin
                          result = 0;
                     end else begin
                          sign_res = sign1 ^ sign2;
@@ -243,7 +243,13 @@ module floating_point_ALU(
                          mantissa1[24] = 0;
                          mantissa2[24] = 0;
                          mantissa_mul = mantissa1[23 : 0] * mantissa2 [23 : 0];
-                         mantissa_res = {2'b00, mantissa_mul[46 : 24]};
+                         
+                         mantissa_res = {1'b0, mantissa_mul[47 : 24]};
+                         if (mantissa_res[24] != 1) begin
+                            mantissa_res = mantissa_res << 1;
+                            exp_res = exp_res - 1;
+                            end
+
                          result = {sign_res, exp_res, mantissa_res[22 : 0]};
                     end
             end
