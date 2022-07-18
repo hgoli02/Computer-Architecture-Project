@@ -51,7 +51,8 @@ module control_unit (
         XOR = 6'b100110 , SUB = 6'b100010, ANDi = 6'b001100 ,XORi = 6'b001110,ORi = 6'b001101,
         SLLV = 6'b000100 , SLL = 6'b000000 , SRL = 6'b000010 , SRLV = 6'b000110, SRA = 6'b000011,
         SLT = 6'b101010 , SLTi = 6'b001010 , ADDU = 6'b100001, SUBU = 6'b100011 , JR = 6'b001000,
-        JAL = 6'b000011, SW = 6'b101011, LW = 6'b100011, LUi = 6'b001111, LB = 6'b100000, SB = 6'b101000;
+        JAL = 6'b000011, SW = 6'b101011, LW = 6'b100011, LUi = 6'b001111, LB = 6'b100000, SB = 6'b101000,
+        MFC1 = 6'b111111, MTC1 = 6'b111110, ADD_S = 6'b111101, SUB_S = 6'b111100, MUL_S = 6'b111000, DIV_S = 6'b110100;
     always @(*) begin
         halted = 0;
         pc_or_mem = 0;
@@ -66,6 +67,9 @@ module control_unit (
         reg_dest = 0;
         should_branch = 0;
         is_unsigned = 0;
+        fp_reg_file_mux = 0;
+        reg_file_mux = 0;
+        float_reg_write_enable = 0;
         // is_byte = 0;        
         //reset control signals!
         case (opcode_ID)
@@ -143,6 +147,27 @@ module control_unit (
                 end
                 JR : begin
                     jump_register = 1;
+                end
+                MTC1: begin
+                    float_reg_write_enable = 1;
+                    reg_dest = 1;
+                    fp_reg_file_mux = 1;
+                end
+                MFC1: begin
+                    reg_write_enable = 1;
+                    reg_file_mux = 1;
+                end
+                ADD_S: begin
+                    float_reg_write_enable = 1;
+                end
+                SUB_S: begin
+                    float_reg_write_enable = 1;
+                end
+                MULT_S: begin
+                    float_reg_write_enable = 1;
+                end
+                DIV_S: begin
+                    float_reg_write_enable = 1;
                 end
                 default: begin
                 end
