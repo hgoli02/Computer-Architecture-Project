@@ -159,15 +159,19 @@ module control_unit (
                 end
                 ADD_S: begin
                     float_reg_write_enable = 1;
+                    reg_dest = 1;
                 end
                 SUB_S: begin
                     float_reg_write_enable = 1;
+                    reg_dest = 1;
                 end
                 MUL_S: begin
                     float_reg_write_enable = 1;
+                    reg_dest = 1;
                 end
                 DIV_S: begin
                     float_reg_write_enable = 1;
+                    reg_dest = 1;
                 end
                 default: begin
                 end
