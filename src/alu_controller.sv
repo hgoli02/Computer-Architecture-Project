@@ -32,14 +32,14 @@ module ALU_CONTROLLER(alu_operation, opcode, func);
                     6'b011010 : alu_operation = DIV; //div
                     6'b100100 : alu_operation = AND; //AND
                     6'b100000 : alu_operation = ADD; //add
-                    6'd45 : alu_operation = ADD_S;
-                    6'd46 : alu_operation = SUB_S;
-                    6'd47 : alu_operation = MUL_S;
-                    6'd48 : alu_operation = DIV_S;
-                    6'd49 : alu_operation = INV_S;
-                    6'd50 : alu_operation = RND_S;
-                    6'd51 : alu_operation = NOP_S;
-                    6'd52 : alu_operation = SLT_S;
+                    6'b111101 : alu_operation = ADD_S;
+                    6'b111100 : alu_operation = SUB_S;
+                    6'b111000 : alu_operation = MUL_S;
+                    6'b110100 : alu_operation = DIV_S;
+                    //6'd49 : alu_operation = INV_S; 
+                    //6'd50 : alu_operation = RND_S;
+                    //6'd51 : alu_operation = NOP_S;
+                    //6'd52 : alu_operation = SLT_S;
                     default : alu_operation = NOP;
                 endcase
             end
