@@ -144,7 +144,6 @@ regfile RegisterFile_Float(
 
 
 
-
 buff_ID_EX buff_idex(
     .should_branch_ID(should_branch_ID),
     .reg_dest_ID(reg_dest_ID),
@@ -418,22 +417,29 @@ Mux fp_reg_mux(.select(fp_regfile_mux_WB),.in1(rt_data_WB),.in0(fp_alu_result_WB
 Mux reg_mux(.select(regfile_mux_WB),.in0(memoralu_or_pc_incremented_mux_out),.in1(fs_data_WB),.out(rd_data));
 
 
-// integer x;
-// initial begin
-//     x = 0;
-// end
-// always @(negedge clk) begin
-//     $display("\n\n*************************************\nclock  %d\n\n",x);
-//     x = x + 1;
-//     // $display("does_shift_amount_need = %d alu_src =  %d alu_src_ID = %d alu_src_EX = %d immediate_ID_EX = %d %d",does_shift_amount_need, alu_src,alu_src_ID, alu_src_EX, immediate_data_ID, immediate_data_EX);
-//     // $display("alu second src = %d, alu first src = %d, alu result EX = %d, alu result MEM %d, alu_result_WB = %d", alu_second_source, alu_first_source, alu_result_EX, alu_result_MEM, alu_result_WB);
-//     // $display("reg_write_enable WB = %d, mem_or_reg = %d, pc_or_mem = %d, rd_data = %d, rd_num = %d", reg_write_enable_WB, mem_or_reg_WB, pc_or_mem_WB,rd_data,rd_num_WB);
-//     $display("rd_num_ID/EX/MEM/WB = %d %d %d %d",rd_num_ID,rd_num_EX,rd_num_MEM,rd_num_WB);
-//     $display("pc_or_mem = %d, reg_dst = %d",pc_or_mem, reg_dest);
-//     // $display("immediate ID,EX =  %d,%d" ,immediate_data_ID,immediate_data_EX);
-//     $display("inst ID,EX,MEM =  %h,%h,%h" ,inst_ID,inst_EX,inst_MEM);
+integer x;
+initial begin
+    x = 0;
+end
+always @(negedge clk) begin
+    $display("\n\n*************************************\nclock  %d\n\n",x);
+    $display("fs_data_EX = %h, ft_data_EX = %h, alu_operation_EX = %d, fp_alu_result_EX = %h",fs_data_EX ,ft_data_EX, alu_operation_EX, fp_alu_result_EX);
+    $display("rt_data ID, EX, MEM, WB = %h %h %h %h", rt_data_ID, rt_data_EX, rt_data_MEM, rt_data_WB);
+    $display("fs_data = %h, ft_data = %h, fs_num = %h, ft_num = %h", fs_data_ID, ft_data_ID, inst_ID[25:21], inst_ID[20:16]);
+    $display("fd_data = %h", fd_data);
+    $display("func ID = %h, opcode_ID = %h", inst_ID[5 : 0], inst_ID[31 : 26]);
+    $display("fp_regfile_mux ID, EX, MEM, WB = %h %h %h %h", fp_regfile_mux, fp_regfile_mux_EX, fp_regfile_mux_MEM, fp_alu_result_WB);
+    $display("float_reg_write_enable ID, EX, MEM, WB = %h %h %h %h", float_reg_write_enable, float_reg_write_enable_EX, float_reg_write_enable_MEM, float_reg_write_enable_WB);
+    x = x + 1;
+    // $display("does_shift_amount_need = %d alu_src =  %d alu_src_ID = %d alu_src_EX = %d immediate_ID_EX = %d %d",does_shift_amount_need, alu_src,alu_src_ID, alu_src_EX, immediate_data_ID, immediate_data_EX);
+    // $display("alu second src = %d, alu first src = %d, alu result EX = %d, alu result MEM %d, alu_result_WB = %d", alu_second_source, alu_first_source, alu_result_EX, alu_result_MEM, alu_result_WB);
+    // $display("reg_write_enable WB = %d, mem_or_reg = %d, pc_or_mem = %d, rd_data = %d, rd_num = %d", reg_write_enable_WB, mem_or_reg_WB, pc_or_mem_WB,rd_data,rd_num_WB);
+    // $display("rd_num_ID/EX/MEM/WB = %d %d %d %d",rd_num_ID,rd_num_EX,rd_num_MEM,rd_num_WB);
+    // $display("pc_or_mem = %d, reg_dst = %d",pc_or_mem, reg_dest);
+    // $display("immediate ID,EX =  %d,%d" ,immediate_data_ID,immediate_data_EX);
+    // $display("inst ID,EX,MEM =  %h,%h,%h" ,inst_ID,inst_EX,inst_MEM);
     
-// end
+end
 
 
 endmodule
