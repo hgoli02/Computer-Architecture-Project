@@ -67,8 +67,8 @@ module control_unit (
         reg_dest = 0;
         should_branch = 0;
         is_unsigned = 0;
-        fp_reg_file_mux = 0;
-        reg_file_mux = 0;
+        fp_regfile_mux = 0;
+        regfile_mux = 0;
         float_reg_write_enable = 0;
         // is_byte = 0;        
         //reset control signals!
@@ -151,11 +151,11 @@ module control_unit (
                 MTC1: begin
                     float_reg_write_enable = 1;
                     reg_dest = 1;
-                    fp_reg_file_mux = 1;
+                    fp_regfile_mux = 1;
                 end
                 MFC1: begin
                     reg_write_enable = 1;
-                    reg_file_mux = 1;
+                    regfile_mux = 1;
                 end
                 ADD_S: begin
                     float_reg_write_enable = 1;
@@ -163,7 +163,7 @@ module control_unit (
                 SUB_S: begin
                     float_reg_write_enable = 1;
                 end
-                MULT_S: begin
+                MUL_S: begin
                     float_reg_write_enable = 1;
                 end
                 DIV_S: begin
