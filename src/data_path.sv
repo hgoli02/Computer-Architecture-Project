@@ -427,9 +427,15 @@ always @(negedge clk) begin
     $display("rt_data ID, EX, MEM, WB = %h %h %h %h", rt_data_ID, rt_data_EX, rt_data_MEM, rt_data_WB);
     $display("fs_data = %h, ft_data = %h, fs_num = %h, ft_num = %h, fd_num = %h", fs_data_ID, ft_data_ID, inst_ID[25:21], inst_ID[20:16], rd_num_WB);
     $display("fd_data = %h", fd_data);
+    $display("rd_data = %h", rd_data);
+    $display("fs_data ID, EX, MEM, WB = %h %h %h %h", fs_data_ID, fs_data_EX, fs_data_MEM, fs_data_WB);
+    $display("rd_num ID, EX, MEM, WB = %h %h %h %h", rd_num_ID, rd_num_EX, rd_num_MEM, rd_num_WB);
     $display("regfile_mux ID, EX, MEM, WB: %h %h %h %h", regfile_mux, regfile_mux_EX, regfile_mux_MEM, regfile_mux_WB);
     $display("fs_data ID, EX, MEM, WB = %h %h %h %h", fs_data_ID, fs_data_EX, fs_data_MEM, fs_data_WB);
     $display("func ID = %h, opcode_ID = %h", inst_ID[5 : 0], inst_ID[31 : 26]);
+    $display("register_file_float[4] = %h", RegisterFile_Float.data[4]);
+    $display("register_float[4] = %h", RegisterFile.data[4]);
+    $display("reg_write_enable ID, EX, MEM, WB = %h %h %h %h", reg_write_enable, reg_write_enable_EX, reg_dest_MEM, reg_dest_WB);
     $display("fp_regfile_mux ID, EX, MEM, WB = %h %h %h %h", fp_regfile_mux, fp_regfile_mux_EX, fp_regfile_mux_MEM, fp_alu_result_WB);
     $display("float_reg_write_enable ID, EX, MEM, WB = %h %h %h %h", float_reg_write_enable, float_reg_write_enable_EX, float_reg_write_enable_MEM, float_reg_write_enable_WB);
     x = x + 1;
