@@ -8,7 +8,8 @@ module regfile(
     rd_we,
     clk,
     rst_b,
-    halted
+    halted,
+    can_print
 );
     parameter XLEN=32, size=32;
 
@@ -22,6 +23,7 @@ module regfile(
     input             clk;
     input             rst_b;
     input             halted;
+    input             can_print;
 
     reg [XLEN-1:0] data[0:size-1];
 
@@ -43,18 +45,20 @@ module regfile(
         integer fd = 0;
         integer i = 0;
 		if (rst_b && (halted)) begin
-			fd = $fopen("output/regdump.reg");
+            if (can_print) begin
+                fd = $fopen("output/regdump.reg");
 
-			$display("=== Simulation Cycle %0d ===", $time/2);
-			$display("*** RegisterFile dump ***");
-			$fdisplay(fd, "*** RegisterFile dump ***");
-			
-			for(i = 0; i < size; i = i+1) begin
-				$display("r%2d = 0x%8x", i, data[i]);
-				$fdisplay(fd, "r%2d = 0x%8h", i, data[i]); 
-			end
-			
-			$fclose(fd);
+                $display("=== Simulation Cycle %0d ===", $time/2);
+                $display("*** RegisterFile dump ***");
+                $fdisplay(fd, "*** RegisterFile dump ***");
+                
+                for(i = 0; i < size; i = i+1) begin
+                    $display("r%2d = 0x%8x", i, data[i]);
+                    $fdisplay(fd, "r%2d = 0x%8h", i, data[i]); 
+                end
+                
+                $fclose(fd);
+            end
 		end
 	end
     

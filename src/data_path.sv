@@ -124,7 +124,8 @@ regfile RegisterFile(
         .rd_we(reg_write_enable_WB),
         .clk(clk),
         .rst_b(rst_b),
-        .halted(halted)
+        .halted(halted),
+        .can_print(1'b1)
 );
 
 regfile RegisterFile_Float(
@@ -137,7 +138,8 @@ regfile RegisterFile_Float(
         .rd_we(float_reg_write_enable_WB),
         .clk(clk),
         .rst_b(rst_b),
-        .halted(halted)
+        .halted(halted),
+        .can_print(1'b0)
 );
 
 
