@@ -386,7 +386,7 @@ module floating_point_ALU(
                     mantissa1[23] = 1;
                     mantissa2[23] = 1;
                     
-                    if(input2 == 0) begin
+                    if(input1 == 0) begin
                         division_by_zero = 1;
                     end
                     else begin
