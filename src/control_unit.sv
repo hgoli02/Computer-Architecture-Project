@@ -52,7 +52,8 @@ module control_unit (
         SLLV = 6'b000100 , SLL = 6'b000000 , SRL = 6'b000010 , SRLV = 6'b000110, SRA = 6'b000011,
         SLT = 6'b101010 , SLTi = 6'b001010 , ADDU = 6'b100001, SUBU = 6'b100011 , JR = 6'b001000,
         JAL = 6'b000011, SW = 6'b101011, LW = 6'b100011, LUi = 6'b001111, LB = 6'b100000, SB = 6'b101000,
-        MFC1 = 6'b111111, MTC1 = 6'b111110, ADD_S = 6'b111101, SUB_S = 6'b111100, MUL_S = 6'b111000, DIV_S = 6'b110100;
+        MFC1 = 6'b111111, MTC1 = 6'b111110, ADD_S = 6'b111101, SUB_S = 6'b111100, MUL_S = 6'b111000, DIV_S = 6'b110100,
+        INV_S = 6'b111011, RND_S = 6'b111001, SLT_S = 6'b111010;
     always @(*) begin
         halted = 0;
         pc_or_mem = 0;
@@ -170,6 +171,18 @@ module control_unit (
                     reg_dest = 1;
                 end
                 DIV_S: begin
+                    float_reg_write_enable = 1;
+                    reg_dest = 1;
+                end
+                INV_S: begin
+                    float_reg_write_enable = 1;
+                    reg_dest = 1;
+                end
+                RND_S: begin
+                    float_reg_write_enable = 1;
+                    reg_dest = 1;
+                end
+                SLT_S: begin
                     float_reg_write_enable = 1;
                     reg_dest = 1;
                 end
