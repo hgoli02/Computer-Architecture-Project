@@ -1,3 +1,6 @@
+`define INF_positive = 32'b01111111100000000000000000000000;
+`define INF_negative = 32'b11111111100000000000000000000000;
+
 module floating_point_ALU(
     input1,
     input2,
@@ -29,6 +32,7 @@ module floating_point_ALU(
     reg [24 : 0] mantissa1, mantissa2, mantissa_res;
     reg [22 : 0] dummy;
     reg [47 : 0] mantissa_mul;
+    reg [8 : 0] exp_container;
 
     always_latch @(input1, input2, operation) begin
         sign1 = input1[31];
@@ -48,9 +52,13 @@ module floating_point_ALU(
         QNaN = 0;
         SNaN = 0;
         inexact = 0;
-        underflow = 0
+        underflow = 0;
         overflow = 0;
 
+        if((exp_1 == 255 && mantissa1 != 0) || (exp_2 == 255 && mantissa2 != 0)) begin
+            SNaN = 1;
+            result = 32'b01111111110000000000000000000000;
+        end
 
         case(operation)
             NOP : 
@@ -119,7 +127,7 @@ module floating_point_ALU(
                                                 while(mantissa_res[23] != 1) begin
                                                     mantissa_res = mantissa_res << 1;
 
-                                                    if(exp_res == 0) begin
+                                                    if(exp_res == 1) begin
                                                         underflow = 1;
                                                     end
 
@@ -135,7 +143,7 @@ module floating_point_ALU(
                                             while(mantissa_res[23] != 1) begin
                                                     mantissa_res = mantissa_res << 1;
 
-                                                    if(exp_res == 0) begin
+                                                    if(exp_res == 1) begin
                                                         underflow = 1;
                                                     end
 
@@ -154,6 +162,10 @@ module floating_point_ALU(
                                         inexact = 1;    
                                     end    
 
+                                    if(exp_res == 254) begin
+                                        overflow = 1;
+                                    end
+
                                     mantissa_res = mantissa_res >> 1;
                                     exp_res = exp_res + 1;
                                  end
@@ -163,7 +175,7 @@ module floating_point_ALU(
                                             while (mantissa_res[23] != 1) begin
                                                 mantissa_res = mantissa_res << 1;
 
-                                                if(exp_res == 0) begin
+                                                if(exp_res == 1) begin
                                                         underflow = 1;
                                                 end
 
@@ -176,6 +188,7 @@ module floating_point_ALU(
                             end
 
                             result = {sign_res,exp_res,mantissa_res[22:0]};
+
 
                     end
                     
@@ -243,7 +256,7 @@ module floating_point_ALU(
                                                 while(mantissa_res[23] != 1) begin
                                                     mantissa_res = mantissa_res << 1;
 
-                                                    if(exp_res == 0) begin
+                                                    if(exp_res == 1) begin
                                                         underflow = 1;
                                                     end
 
@@ -259,7 +272,7 @@ module floating_point_ALU(
                                             while(mantissa_res[23] != 1) begin
                                                     mantissa_res = mantissa_res << 1;
 
-                                                    if(exp_res == 0) begin
+                                                    if(exp_res == 1) begin
                                                         underflow = 1;
                                                     end
 
@@ -278,6 +291,11 @@ module floating_point_ALU(
                                         inexact = 1;    
                                     end
 
+                                    
+                                    if(exp_res == 254) begin
+                                        overflow = 1;
+                                    end
+
                                     mantissa_res = mantissa_res >> 1;
                                     exp_res = exp_res + 1;
                                  end
@@ -287,7 +305,7 @@ module floating_point_ALU(
                                             while (mantissa_res[23] != 1) begin
                                                 mantissa_res = mantissa_res << 1;
 
-                                                if(exp_res == 0) begin
+                                                if(exp_res == 1) begin
                                                         underflow = 1;
                                                 end
 
@@ -307,11 +325,17 @@ module floating_point_ALU(
                  end
 
             MUL : begin
+                        if(((input1 == INF_negative || input1 == INF_positive) && input2 == 0) ||
+                           ((input2 == INF_negative || input2 == INF_positive) && input1 == 0)) begin
+                            SNaN = 1;
+                            result = 32'b01111111110000000000000000000000;
+                        end
+                        else begin
                       if (input1 == 0 || input2 == 0) begin
                          result = 0;
                     end else begin
                          sign_res = sign1 ^ sign2;
-                         exp_res = exp1 + exp2 - 126;
+                         exp_container = exp1 + exp2 - 126;
                          mantissa1[24] = 0;
                          mantissa2[24] = 0;
                          mantissa_mul = mantissa1[23 : 0] * mantissa2 [23 : 0];
@@ -324,19 +348,32 @@ module floating_point_ALU(
                          if (mantissa_res[24] != 1) begin
                             mantissa_res = mantissa_res << 1;
 
-                            if(exp_res == 0) begin
+                            if(exp_container == 1) begin
                                 underflow = 1;
                             end
 
-                            exp_res = exp_res - 1;
+                            exp_container = exp_container - 1;
                             end
+                         if(exp_container == 255) begin
+                            overflow = 1; 
+                         end   
+
+                         exp_res = exp_container;
 
                          result = {sign_res, exp_res, mantissa_res[22 : 0]};
                     end
             end
+            end
 
             DIV : 
                  begin
+                    if((input1 == 0 && input2 == 0) || 
+                    ((input1 == INF_positive || input1 == INF_negative) &&
+                     (input1 == INF_positive || input1 == INF_negative))) begin
+                        SNaN = 1;
+                        result = 32'b01111111110000000000000000000000;
+                    end
+                    else begin
                     if(input2 == 0) begin
                        division_by_zero = 1;
                     end
@@ -358,8 +395,12 @@ module floating_point_ALU(
                             end
 
 
-                            exp_res = exp1 - exp2 + 126;
-                           
+                            exp_container = exp1 - exp2 + 126;
+
+                            
+                            if(exp_container >= 255) begin
+                             overflow = 1;
+                            end
 
                             if (({mantissa1[23 : 0],mantissa_res[23 : 0]} % {24'd0, mantissa2[23 : 0]}) != 0) begin
                                 inexact = 1;
@@ -371,19 +412,23 @@ module floating_point_ALU(
                             while(mantissa_res[23] != 1) begin
                                 mantissa_res = mantissa_res << 1;
 
-                                if(exp_res == 0) begin
+                                if(exp_container == 1) begin
                                     underflow = 1;
                                 end
 
-                                exp_res = exp_res - 1;
+                                exp_container = exp_container - 1;
                                                     
                                 end 
 
+
+                            exp_res = exp_container;
                             result = {sign_res,exp_res,mantissa_res[22:0]};
-                            
-                        end
+
+                           end
+
+                       end
                     end
-                 end
+                end
 
             RND : 
                  begin
@@ -498,8 +543,11 @@ module floating_point_ALU(
                                 exp1 = exp1 + 1;
                             end
 
-                            exp_res = exp1 - exp2 + 126;
+                            exp_container = exp1 - exp2 + 126;
                            
+                           if(exp_container >= 255) begin
+                            overflow = 1;
+                           end
 
                            
                             if (({mantissa1[23 : 0],mantissa_res[23 : 0]} % {24'd0, mantissa2[23 : 0]}) != 0) begin
@@ -512,14 +560,16 @@ module floating_point_ALU(
                             while(mantissa_res[23] != 1) begin
                                 mantissa_res = mantissa_res << 1;
 
-                                if(exp_res == 0) begin
+                                if(exp_container == 1) begin
                                    underflow = 1;
                                 end
 
-                                exp_res = exp_res - 1;
+
+                                exp_container = exp_container - 1;
                                                     
                                 end 
 
+                            exp_res = exp_container;
                             result = {sign_res,exp_res,mantissa_res[22:0]};
                             
                         end
@@ -527,6 +577,11 @@ module floating_point_ALU(
                  end     
             default: begin end
         endcase
+
+        if ((exp_res == 255 && mantissa_res != 0) && SNaN != 1 ) begin
+            QNaN = 1;
+        end
+
     end
 
 endmodule
