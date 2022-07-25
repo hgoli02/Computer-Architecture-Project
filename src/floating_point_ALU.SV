@@ -32,7 +32,7 @@ module floating_point_ALU(
     reg [47 : 0] mantissa_mul;
     reg [8 : 0] exp_container;
 
-    always @(input1, input2, operation) begin
+    always_latch @(input1, input2, operation) begin
         sign1 = input1[31];
         sign2 = input2[31];
         
