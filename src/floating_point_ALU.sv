@@ -360,7 +360,7 @@ module floating_point_ALU(
 
                             exp_container = exp_container - 1;
                             end
-                         if(exp_container[7:0] > 255) begin
+                         if(exp_container > 255) begin
                             overflow = 1;
                          end   
 
